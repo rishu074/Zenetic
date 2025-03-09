@@ -11,6 +11,12 @@
         <a href="/dashboard/journal" class="nav-link">Journal</a>
         <a href="/dashboard/thought" class="nav-link">Thought</a>
         <a href="/dashboard/todo" class="nav-link">Todo</a>
+        <button class="logout-btn" onclick="handleLogout()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Logout</span>
+        </button>
     </div>
 </nav>
 
@@ -68,6 +74,28 @@
         padding: 0.5rem;
     }
 
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: #dc2626;
+        color: #ffffff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .logout-btn:hover {
+        background-color: #b91c1c;
+    }
+
+    .logout-btn svg {
+        stroke: currentColor;
+    }
+
     @media (max-width: 768px) {
         .mobile-menu-btn {
             display: block;
@@ -89,6 +117,11 @@
         .nav-links.active {
             display: flex;
         }
+
+        .logout-btn {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 
@@ -106,4 +139,9 @@
             navLinks.classList.remove('active');
         }
     });
+
+    // Logout functionality
+    function handleLogout() {
+        window.location.href = '/logout';
+    }
 </script> 

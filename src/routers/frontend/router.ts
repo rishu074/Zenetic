@@ -14,4 +14,9 @@ FRONTEND_ROUTER.get("/dashboard", Authentication, (req, res, next) => {
     res.render("dashboard.ejs")
 })
 
+FRONTEND_ROUTER.get("/logout", (req, res, next) => {
+    res.clearCookie('password');
+    res.redirect("/")
+})
+
 export default FRONTEND_ROUTER;
