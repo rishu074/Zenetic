@@ -2,16 +2,22 @@ import { Router } from "express";
 import NOT_FOUND_HANDLER from "./global-handlers/404";
 import express from 'express';
 import path from "path";
-import STATUS_HANDLER from "./global-handlers/status";
 import GLOBAL_ERROR_HANDLER from "./global-handlers/Error";
-
+import API_ROUTER from "./api/router";
+import FRONTEND_ROUTER from "./frontend/router";
 const ParentCat = Router()
-ParentCat.use(express.json()) // Only parse json body's
+ParentCat.use(express.json()) // Parse json body's
+ParentCat.use(express.urlencoded({ extended: true })) // Parse urlencoded body's
 
 /**
- * Status 
+ * API Routes 
  */
-ParentCat.get("/", STATUS_HANDLER)
+ParentCat.use("/api", API_ROUTER)
+
+/**
+ * Frontend Routes
+ */
+ParentCat.use("/", FRONTEND_ROUTER)
 
 /**
  * Global Handlers area

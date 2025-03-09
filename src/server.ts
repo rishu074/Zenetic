@@ -7,6 +7,7 @@ import express, { Express, Request, Response } from "express";
 import morganMiddleware from "./loggers/morgan";
 import compression from 'compression';
 import StartApplication from "./utils/startup/function";
+import path = require("path");
 
 
 // Create Application
@@ -22,6 +23,11 @@ app.use(compression()) // Compress all bodies
 
 // Morgan Logger
 app.use(morganMiddleware);
+
+// Frontend Files
+app.set('view engine', 'ejs');
+app.set('views', path.join(process.cwd(), 'src/frontend'));
+
 
 // Host configurations
 const port = parseInt(process.env.PORT || "5000");
