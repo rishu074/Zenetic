@@ -10,6 +10,9 @@ const READ_JOURNAL_HANDLER = CreateRequestHandler(async function () {
     // }, { __v: false }, { limit: this.local.limit, skip: this.local.limit * (this.local.page-1) }), "Successfully fetched data.");
 
 
-    this.send_data(await JournalModel.find(this.local.filters, { __v: false }, { limit: this.local.limit, skip: this.local.limit * (this.local.page-1) }), "Successfully fetched data.");
+    this.send_data({
+        journals: await JournalModel.find(this.local.filters, { __v: false }, { limit: this.local.limit, skip: this.local.limit * (this.local.page-1) }),
+        total: await JournalModel.countDocuments(this.local.filters),
+    }, "Successfully fetched data.");
 }, [ServerError], undefined, [GetReadQueryValidator([10, 200])]);
 export default READ_JOURNAL_HANDLER;
