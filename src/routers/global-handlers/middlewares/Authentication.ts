@@ -10,6 +10,7 @@ export default async function Authentication(req: Request, res: Response, next: 
     const password = cookies.password;
 
     if(!password || !(await checkHash(password, process.env.PASSWORD_HASH || 'default_password'))) {
+        res.clearCookie('password');
         return res.redirect("/")
     }
     next();

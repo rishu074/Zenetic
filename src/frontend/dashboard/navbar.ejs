@@ -1,0 +1,109 @@
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a href="/dashboard" class="brand">Zenetic</a>
+        <button class="mobile-menu-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+            </svg>
+        </button>
+    </div>
+    <div class="nav-links">
+        <a href="/dashboard/journal" class="nav-link">Journal</a>
+        <a href="/dashboard/thought" class="nav-link">Thought</a>
+        <a href="/dashboard/todo" class="nav-link">Todo</a>
+    </div>
+</nav>
+
+<style>
+    .navbar {
+        background-color: #1e293b;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+    }
+
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .brand {
+        color: #f8fafc;
+        font-size: 1.5rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .nav-link {
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: color 0.2s ease;
+    }
+
+    .nav-link:hover {
+        color: #f8fafc;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: #f8fafc;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-menu-btn {
+            display: block;
+        }
+
+        .nav-links {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #1e293b;
+            padding: 1rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .nav-links.active {
+            display: flex;
+        }
+    }
+</style>
+
+<script>
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.navbar')) {
+            navLinks.classList.remove('active');
+        }
+    });
+</script> 
