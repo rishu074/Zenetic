@@ -1,6 +1,6 @@
 # Zenetic
 
-An application for peace of my mind.
+An application for peace of my mind. This application helps me do my daily things and remain productive.
 
 ## Environment Variables
 
