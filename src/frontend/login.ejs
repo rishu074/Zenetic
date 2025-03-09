@@ -113,6 +113,11 @@
             margin-top: 0.5rem;
             display: none;
         }
+
+        .submit-btn:disabled {
+            background-color: #64748b;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -121,7 +126,7 @@
             <h1>Zenetic</h1>
             <p>Enter your password to continue</p>
         </div>
-        <form action="/api/login" method="POST" class="login-form">
+        <form id="loginForm" class="login-form">
             <div class="form-group">
                 <input 
                     type="password" 
@@ -138,18 +143,56 @@
     </div>
 
     <script>
-        const form = document.querySelector('.login-form');
+        const form = document.getElementById('loginForm');
         const passwordInput = document.querySelector('.password-input');
         const errorMessage = document.querySelector('.error-message');
+        const submitButton = document.querySelector('.submit-btn');
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
             if (!passwordInput.value) {
-                e.preventDefault();
                 passwordInput.classList.add('error');
+                errorMessage.textContent = 'Password is required';
                 errorMessage.style.display = 'block';
                 setTimeout(() => {
                     passwordInput.classList.remove('error');
                 }, 500);
+                return;
+            }
+
+            try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Logging in...';
+
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ password: passwordInput.value })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Login failed');
+                }
+
+                if (data?.data?.redirect) {
+                    window.location.href = data.data.redirect;
+                }
+            } catch (error) {
+                passwordInput.classList.add('error');
+                errorMessage.textContent = error.message || 'An error occurred';
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    passwordInput.classList.remove('error');
+                }, 500);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Login';
+                passwordInput.value = '';
             }
         });
 
