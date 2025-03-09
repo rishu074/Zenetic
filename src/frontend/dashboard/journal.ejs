@@ -291,6 +291,113 @@
                 width: auto;
             }
         }
+
+        .create-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .create-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .form-select {
+            padding: 0.75rem 1rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cancel-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #475569;
+            border: none;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background-color: #64748b;
+        }
+
+        .submit-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .submit-btn:disabled {
+            background-color: #64748b;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -299,6 +406,7 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">Journal</h1>
+            <button class="create-btn" onclick="showCreateModal()">Create Journal</button>
         </div>
 
         <div class="filters-container">
@@ -335,6 +443,33 @@
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <div class="modal-body" id="modalContent"></div>
+        </div>
+    </div>
+
+    <div id="createJournalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Journal</h2>
+                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="createJournalForm" class="create-form" onsubmit="handleCreateJournal(event)">
+                <div class="form-group">
+                    <label for="journalContent" class="form-label">Content</label>
+                    <textarea id="journalContent" class="form-input" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="journalDate" class="form-label">Date</label>
+                    <input type="datetime-local" id="journalDate" class="form-select" required>
+                </div>
+                <div class="form-group">
+                    <label for="journalSpecial" class="form-label">Type (optional)</label>
+                    <input type="text" id="journalSpecial" class="form-select" placeholder="Enter journal type...">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeCreateModal()">Cancel</button>
+                    <button type="submit" class="submit-btn" id="submitButton">Create</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -582,6 +717,75 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeModal();
+            }
+        });
+
+        function showCreateModal() {
+            const modal = document.getElementById('createJournalModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Set default date to current date and time
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('journalDate').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
+            document.getElementById('journalContent').focus();
+        }
+
+        function closeCreateModal() {
+            const modal = document.getElementById('createJournalModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            document.getElementById('createJournalForm').reset();
+        }
+
+        async function handleCreateJournal(event) {
+            event.preventDefault();
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Creating...';
+
+            try {
+                const content = document.getElementById('journalContent').value;
+                const date = document.getElementById('journalDate').value;
+                const special = document.getElementById('journalSpecial').value.trim();
+
+                const response = await fetch('/api/journals', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content,
+                        date: new Date(date).toISOString(),
+                        special: special || 'normal'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create journal');
+                }
+
+                closeCreateModal();
+                loadPage(1); // Refresh the journals list
+            } catch (error) {
+                console.error('Error creating journal:', error);
+                alert('Failed to create journal. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create';
+            }
+        }
+
+        // Add this to the existing modal close handlers
+        document.getElementById('createJournalModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeCreateModal();
             }
         });
     </script>
