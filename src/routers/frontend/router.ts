@@ -11,7 +11,27 @@ FRONTEND_ROUTER.get("/", (req, res, next) => {
 })
 
 FRONTEND_ROUTER.get("/dashboard", Authentication, (req, res, next) => {
-    res.render("dashboard.ejs")
+    res.render("dashboard/index.ejs")
+})
+
+// Journal route
+FRONTEND_ROUTER.get("/dashboard/journal", Authentication, (req, res, next) => {
+    res.render("dashboard/journal.ejs")
+})
+
+// Thought route
+FRONTEND_ROUTER.get("/dashboard/thought", Authentication, (req, res, next) => {
+    res.render("dashboard/thought.ejs")
+})
+
+// Todo route
+FRONTEND_ROUTER.get("/dashboard/todo", Authentication, (req, res, next) => {
+    res.render("dashboard/todo.ejs")
+})
+
+// Drifts route
+FRONTEND_ROUTER.get("/dashboard/drifts", Authentication, (req, res, next) => {
+    res.render("dashboard/drifts.ejs")
 })
 
 FRONTEND_ROUTER.get("/logout", (req, res, next) => {
