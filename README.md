@@ -13,3 +13,4 @@ The following environment variables need to be set in a `.env` file:
 - `CONSOLE_LOG_LEVEL` - Logging level for console output
 - `APP_LOGS` - Directory path for application logs
 - `MONGO_DB` - MongoDB database name
+- `PASSWORD_HASH` - Hash of the password that you wish to use.
