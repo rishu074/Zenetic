@@ -274,6 +274,72 @@
 
             .time-range-selector {
                 flex-wrap: wrap;
+                width: 100%;
+            }
+
+            .time-range-btn {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+
+            .tag-stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .graph-container {
+                height: 350px;
+            }
+
+            .distribution-container {
+                height: 350px;
+            }
+
+            .tag-chart-container {
+                height: 350px;
+            }
+
+            .graph-controls {
+                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .current-period {
+                order: -1;
+                width: 100%;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .observations-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 4rem 0.75rem 1rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .section-header {
+                font-size: 1.25rem;
+            }
+
+            .time-range-btn {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
             }
         }
     </style>
