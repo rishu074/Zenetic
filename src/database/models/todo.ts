@@ -33,6 +33,12 @@ const TodoSchema = new mongoose.Schema({
             type: Number,
             required: function(this: any) {
                 return this.parent().parent().type === 'every';
+            },
+            validate: {
+                validator: function(this: any) {
+                    return this.parent().parent().type !== 'onetime';
+                },
+                message: 'Cannot set every.amount when type is onetime'
             }
         },
         unit: {
@@ -40,6 +46,12 @@ const TodoSchema = new mongoose.Schema({
             enum: ['day', 'week', 'month'],
             required: function(this: any) {
                 return this.parent().parent().type === 'every';
+            },
+            validate: {
+                validator: function(this: any) {
+                    return this.parent().parent().type !== 'onetime';
+                },
+                message: 'Cannot set every.unit when type is onetime'
             }
         }
     },
