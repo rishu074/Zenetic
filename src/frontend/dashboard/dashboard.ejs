@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenetic - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            padding: 6rem 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .graph-container {
+            background-color: #1e293b;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .distribution-container {
+            background-color: #1e293b;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .distribution-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .distribution-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #f8fafc;
+        }
+
+        .graph-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .graph-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0.5rem 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .graph-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #f8fafc;
+        }
+
+        .time-range-selector {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .time-range-btn {
+            padding: 0.5rem 1rem;
+            background-color: #334155;
+            border: none;
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .time-range-btn.active {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+
+        .time-range-btn:hover:not(.active) {
+            background-color: #475569;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f8fafc;
+            margin: 3rem 0 2rem;
+        }
+
+        .section-subheader {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #f8fafc;
+            margin-bottom: 1rem;
+        }
+
+        .observations-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tag-stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .tag-chart-container {
+            background-color: #1e293b;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .tag-chart-header {
+            grid-column: 1 / -1;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .stat-card {
+            background-color: #1e293b;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .graph-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .graph-nav-btn {
+            padding: 0.5rem 1rem;
+            background-color: #334155;
+            border: none;
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .graph-nav-btn:hover:not(:disabled) {
+            background-color: #475569;
+        }
+
+        .graph-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .current-period {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .chart-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+            min-width: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .date-input {
+            background-color: #334155;
+            border: none;
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        .date-input::-webkit-calendar-picker-indicator {
+            filter: invert(0.6);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 5rem 1rem 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .time-range-selector {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <%- include('navbar') %>
+    
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalJournals">-</div>
+                <div class="stat-label">Total Journals</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="thisWeekJournals">-</div>
+                <div class="stat-label">Journals This Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="thisMonthJournals">-</div>
+                <div class="stat-label">Journals This Month</div>
+            </div>
+        </div>
+
+        <h2 class="section-header">Journal Activity</h2>
+
+        <div class="graph-container">
+            <div class="graph-header">
+                <div class="time-range-selector">
+                    <button class="time-range-btn active" data-range="monthly">Monthly</button>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="journalChart"></canvas>
+            </div>
+            <div class="graph-controls">
+                <button class="graph-nav-btn" id="prevPeriod">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Previous
+                </button>
+                <span class="current-period" id="currentPeriod"></span>
+                <button class="graph-nav-btn" id="nextPeriod">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <h2 class="section-header">Journal Types</h2>
+
+        <div class="distribution-container">
+            <div class="chart-wrapper">
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+
+        <h2 class="section-header">Observations</h2>
+
+        <div class="observations-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalObservations">-</div>
+                <div class="stat-label">Total Observations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="thisWeekObservations">-</div>
+                <div class="stat-label">Observations This Week</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="thisMonthObservations">-</div>
+                <div class="stat-label">Observations This Month</div>
+            </div>
+        </div>
+
+        <div class="graph-container">
+            <div class="graph-header">
+                <div class="time-range-selector">
+                    <button class="time-range-btn active" data-range="monthly" data-target="observations">Monthly</button>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="observationsChart"></canvas>
+            </div>
+            <div class="graph-controls">
+                <button class="graph-nav-btn" id="observationsPrevPeriod">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Previous
+                </button>
+                <span class="current-period" id="observationsCurrentPeriod"></span>
+                <button class="graph-nav-btn" id="observationsNextPeriod">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="tag-stats-container">
+            <div class="tag-chart-header" style="grid-column: 1 / -1; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div class="time-range-selector">
+                        <button class="time-range-btn active" data-range="week" data-target="tags">This Week</button>
+                        <button class="time-range-btn" data-range="15days" data-target="tags">Last 15 Days</button>
+                        <button class="time-range-btn" data-range="30days" data-target="tags">Last 30 Days</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tag-chart-container">
+                <h3 class="section-subheader">Common Feelings</h3>
+                <div class="chart-wrapper">
+                    <canvas id="feelingsChart"></canvas>
+                </div>
+            </div>
+            <div class="tag-chart-container">
+                <h3 class="section-subheader">Common Urges</h3>
+                <div class="chart-wrapper">
+                    <canvas id="urgesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let journalChart = null;
+        let distributionChart = null;
+        let observationsChart = null;
+        let feelingsChart = null;
+        let urgesChart = null;
+        let currentOffset = 0;
+        let observationsOffset = 0;
+        let allJournals = [];
+        let allObservations = [];
+        let currentRange = 'daily';
+        let observationsRange = 'monthly';
+        let currentTagRange = 'week';
+        let customStartDate = null;
+        let customEndDate = null;
+
+        // Colors for different journal types
+        const typeColors = {
+            'normal': '#3b82f6',
+            'New Learning': '#22c55e',
+            'Health Awareness': '#eab308',
+            'Valentine\'s Day': '#ec4899',
+            'Birthday': '#a855f7',
+            'Open Source Contribution': '#f97316',
+            'New Year Celebration': '#06b6d4',
+            'Productivity Hack': '#64748b',
+            'New Recipe': '#14b8a6',
+            'Coding Streak': '#8b5cf6',
+            'Workout Milestone': '#ef4444'
+        };
+
+        // Fetch journals data and update stats
+        async function fetchJournalStats() {
+            try {
+                let allJournalsTemp = [];
+                let currentPage = 1;
+                let hasMore = true;
+
+                // Fetch all journals using pagination
+                while (hasMore) {
+                    const response = await fetch(`/api/journals?filters={}&limit=200&page=${currentPage}&projection={"content": false}`);
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to fetch journals');
+                    }
+
+                    const journals = data.data.journals;
+                    allJournalsTemp = [...allJournalsTemp, ...journals];
+                    
+                    // Check if we have more pages
+                    hasMore = journals.length === 200 && allJournalsTemp.length < data.data.total;
+                    currentPage++;
+
+                    // Update loading state in UI
+                    document.getElementById('totalJournals').textContent = `${allJournalsTemp.length}/${data.data.total}`;
+                }
+
+                allJournals = allJournalsTemp;
+                const total = allJournals.length;
+
+                // Update total journals stat
+                document.getElementById('totalJournals').textContent = total;
+
+                // Calculate this week's and this month's journals
+                const now = new Date();
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                startOfWeek.setHours(0, 0, 0, 0);
+
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+                const thisWeekCount = allJournals.filter(journal => 
+                    new Date(journal.date) >= startOfWeek
+                ).length;
+
+                const thisMonthCount = allJournals.filter(journal => 
+                    new Date(journal.date) >= startOfMonth
+                ).length;
+
+                document.getElementById('thisWeekJournals').textContent = thisWeekCount;
+                document.getElementById('thisMonthJournals').textContent = thisMonthCount;
+
+                return allJournals;
+            } catch (error) {
+                console.error('Error fetching journal stats:', error);
+                return [];
+            }
+        }
+
+        // Fetch observations data and update stats
+        async function fetchObservationStats() {
+            try {
+                let allObservationsTemp = [];
+                let currentPage = 1;
+                let hasMore = true;
+
+                // Fetch all observations using pagination
+                while (hasMore) {
+                    const response = await fetch(`/api/observations?filters={}&limit=200&page=${currentPage}&projection={"sequences": false}`);
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to fetch observations');
+                    }
+
+                    const observations = data.data.observations;
+                    allObservationsTemp = [...allObservationsTemp, ...observations];
+                    
+                    // Check if we have more pages
+                    hasMore = observations.length === 200 && allObservationsTemp.length < data.data.total;
+                    currentPage++;
+
+                    // Update loading state in UI
+                    document.getElementById('totalObservations').textContent = `${allObservationsTemp.length}/${data.data.total}`;
+                }
+
+                allObservations = allObservationsTemp;
+                const total = allObservations.length;
+
+                // Update total observations stat
+                document.getElementById('totalObservations').textContent = total;
+
+                // Calculate this week's and this month's observations
+                const now = new Date();
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                startOfWeek.setHours(0, 0, 0, 0);
+
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+                const thisWeekCount = allObservations.filter(observation => 
+                    new Date(observation.date) >= startOfWeek
+                ).length;
+
+                const thisMonthCount = allObservations.filter(observation => 
+                    new Date(observation.date) >= startOfMonth
+                ).length;
+
+                document.getElementById('thisWeekObservations').textContent = thisWeekCount;
+                document.getElementById('thisMonthObservations').textContent = thisMonthCount;
+
+                // Update tag charts
+                updateTagCharts(allObservations, 'week');
+
+                return allObservations;
+            } catch (error) {
+                console.error('Error fetching observations:', error);
+                return [];
+            }
+        }
+
+        // Process journals data for different time ranges
+        function processJournalData(journals, range) {
+            const now = new Date();
+            const data = new Map();
+            
+            if (range === 'daily') {
+                // Show 7 days per page
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - i - (currentOffset * 7));
+                    date.setHours(0, 0, 0, 0);
+                    data.set(date.toISOString().split('T')[0], 0);
+                }
+
+                journals.forEach(journal => {
+                    const date = new Date(journal.date).toISOString().split('T')[0];
+                    if (data.has(date)) {
+                        data.set(date, data.get(date) + 1);
+                    }
+                });
+            } else if (range === 'weekly') {
+                // Show 4 weeks per page
+                for (let i = 3; i >= 0; i--) {
+                    const date = new Date(now);
+                    date.setDate(date.getDate() - (i * 7) - (currentOffset * 28));
+                    const weekStart = new Date(date);
+                    weekStart.setDate(date.getDate() - date.getDay());
+                    data.set(weekStart.toISOString().split('T')[0], 0);
+                }
+
+                journals.forEach(journal => {
+                    const date = new Date(journal.date);
+                    const weekStart = new Date(date);
+                    weekStart.setDate(date.getDate() - date.getDay());
+                    const key = weekStart.toISOString().split('T')[0];
+                    if (data.has(key)) {
+                        data.set(key, data.get(key) + 1);
+                    }
+                });
+            } else if (range === 'monthly') {
+                // Show 6 months per page
+                for (let i = 5; i >= 0; i--) {
+                    const date = new Date(now.getFullYear(), now.getMonth() - i - (currentOffset * 6), 1);
+                    data.set(date.toISOString().split('T')[0], 0);
+                }
+
+                journals.forEach(journal => {
+                    const date = new Date(journal.date);
+                    const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+                    const key = monthStart.toISOString().split('T')[0];
+                    if (data.has(key)) {
+                        data.set(key, data.get(key) + 1);
+                    }
+                });
+            }
+
+            // Update period display
+            updatePeriodDisplay(Array.from(data.keys())[0], Array.from(data.keys())[data.size - 1], range);
+
+            // Update navigation buttons
+            updateNavigationButtons(journals, range);
+
+            return {
+                labels: Array.from(data.keys()).map(date => {
+                    if (range === 'daily') {
+                        return new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    } else if (range === 'weekly') {
+                        const d = new Date(date);
+                        return `Week of ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                    } else {
+                        return new Date(date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    }
+                }),
+                datasets: [{
+                    label: 'Number of Journals',
+                    data: Array.from(data.values()),
+                    backgroundColor: '#3b82f6',
+                    borderColor: '#2563eb',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            };
+        }
+
+        // Process distribution data
+        function processDistributionData(journals) {
+            const typeCount = new Map();
+            
+            journals.forEach(journal => {
+                const type = journal.special || 'normal';
+                typeCount.set(type, (typeCount.get(type) || 0) + 1);
+            });
+
+            // Sort by count in descending order
+            const sortedTypes = Array.from(typeCount.entries())
+                .sort((a, b) => b[1] - a[1]);
+
+            return {
+                labels: sortedTypes.map(([type]) => type.charAt(0).toUpperCase() + type.slice(1)),
+                datasets: [{
+                    data: sortedTypes.map(([, count]) => count),
+                    backgroundColor: sortedTypes.map(([type]) => typeColors[type] || '#6b7280'),
+                    borderWidth: 0,
+                    borderRadius: 4
+                }]
+            };
+        }
+
+        // Process observations data for different time ranges
+        function processObservationsData(observations, range) {
+            const now = new Date();
+            const data = new Map();
+            
+            // Show 6 months per page
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i - (observationsOffset * 6), 1);
+                date.setHours(0, 0, 0, 0);
+                data.set(date.toISOString().split('T')[0], 0);
+            }
+
+            observations.forEach(observation => {
+                const obsDate = new Date(observation.date);
+                const monthStart = new Date(obsDate.getFullYear(), obsDate.getMonth(), 1);
+                monthStart.setHours(0, 0, 0, 0);
+                const key = monthStart.toISOString().split('T')[0];
+                if (data.has(key)) {
+                    data.set(key, data.get(key) + 1);
+                }
+            });
+
+            // Update period display
+            updateObservationsPeriodDisplay(Array.from(data.keys())[0], Array.from(data.keys())[data.size - 1], range);
+
+            // Update navigation buttons
+            updateObservationsNavigationButtons(observations, range);
+
+            const sortedDates = Array.from(data.keys()).sort();
+            
+            return {
+                labels: sortedDates.map(date => {
+                    const d = new Date(date);
+                    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                }),
+                datasets: [{
+                    label: 'Number of Observations',
+                    data: sortedDates.map(date => data.get(date)),
+                    backgroundColor: '#22c55e',
+                    borderColor: '#22c55e',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: false
+                }]
+            };
+        }
+
+        function updatePeriodDisplay(startDate, endDate, range) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            let displayText;
+
+            if (range === 'daily') {
+                displayText = `${start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+            } else if (range === 'weekly') {
+                displayText = `${start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+            } else {
+                displayText = `${start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+            }
+
+            document.getElementById('currentPeriod').textContent = displayText;
+        }
+
+        function updateNavigationButtons(journals, range) {
+            const prevBtn = document.getElementById('prevPeriod');
+            const nextBtn = document.getElementById('nextPeriod');
+
+            // Disable next button if we're at the current period
+            nextBtn.disabled = currentOffset === 0;
+
+            // Disable prev button if we don't have any older data
+            const oldestDate = new Date(Math.min(...journals.map(j => new Date(j.date))));
+            const now = new Date();
+            let periodSize;
+
+            if (range === 'daily') {
+                periodSize = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+            } else if (range === 'weekly') {
+                periodSize = 28 * 24 * 60 * 60 * 1000; // 28 days in milliseconds
+            } else {
+                periodSize = 180 * 24 * 60 * 60 * 1000; // ~6 months in milliseconds
+            }
+
+            const currentPeriodStart = new Date(now - (currentOffset + 1) * periodSize);
+            prevBtn.disabled = oldestDate > currentPeriodStart;
+        }
+
+        function updateObservationsPeriodDisplay(startDate, endDate, range) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            let displayText;
+
+            if (range === 'daily') {
+                displayText = `${start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+            } else if (range === 'weekly') {
+                displayText = `${start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+            } else {
+                displayText = `${start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+            }
+
+            document.getElementById('observationsCurrentPeriod').textContent = displayText;
+        }
+
+        function updateObservationsNavigationButtons(observations, range) {
+            const prevBtn = document.getElementById('observationsPrevPeriod');
+            const nextBtn = document.getElementById('observationsNextPeriod');
+
+            // Disable next button if we're at the current period
+            nextBtn.disabled = observationsOffset === 0;
+
+            // Disable prev button if we don't have any older data
+            const oldestDate = new Date(Math.min(...observations.map(o => new Date(o.date))));
+            const now = new Date();
+            let periodSize;
+
+            if (range === 'daily') {
+                periodSize = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+            } else if (range === 'weekly') {
+                periodSize = 28 * 24 * 60 * 60 * 1000; // 28 days in milliseconds
+            } else {
+                periodSize = 180 * 24 * 60 * 60 * 1000; // ~6 months in milliseconds
+            }
+
+            const currentPeriodStart = new Date(now - (observationsOffset + 1) * periodSize);
+            prevBtn.disabled = oldestDate > currentPeriodStart;
+        }
+
+        // Update chart with new data
+        function updateChart(data, range) {
+            const ctx = document.getElementById('journalChart').getContext('2d');
+            
+            if (journalChart) {
+                journalChart.destroy();
+            }
+
+            journalChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: (tooltipItems) => {
+                                    const date = new Date(data.labels[tooltipItems[0].dataIndex]);
+                                    return date.toLocaleDateString('en-US', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#94a3b8',
+                                padding: 10,
+                                precision: 0
+                            },
+                            grid: {
+                                color: '#334155',
+                                drawBorder: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            stacked: true,
+                            ticks: {
+                                color: '#94a3b8',
+                                padding: 5,
+                                maxRotation: 0
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            bottom: 10,
+                            left: 10,
+                            right: 10
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update distribution chart
+        function updateDistributionChart(journals) {
+            const ctx = document.getElementById('distributionChart').getContext('2d');
+            
+            if (distributionChart) {
+                distributionChart.destroy();
+            }
+
+            const data = processDistributionData(journals);
+
+            distributionChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${value} journals (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 50,
+                                color: '#94a3b8',
+                                precision: 0
+                            },
+                            grid: {
+                                color: '#334155',
+                                drawBorder: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 10,
+                            left: 10,
+                            right: 10
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update observations chart
+        function updateObservationsChart(data) {
+            const ctx = document.getElementById('observationsChart').getContext('2d');
+            
+            if (observationsChart) {
+                observationsChart.destroy();
+            }
+
+            observationsChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: (tooltipItems) => {
+                                    const date = new Date(data.labels[tooltipItems[0].dataIndex]);
+                                    return date.toLocaleDateString('en-US', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#94a3b8',
+                                padding: 10,
+                                precision: 0
+                            },
+                            grid: {
+                                color: '#334155',
+                                drawBorder: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#94a3b8',
+                                padding: 5,
+                                maxRotation: 0
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            bottom: 10,
+                            left: 10,
+                            right: 10
+                        }
+                    }
+                }
+            });
+        }
+
+        // Process tag data for feelings and urges with date range
+        function processTagData(observations, type, range) {
+            const now = new Date();
+            let startDate;
+            
+            if (range === 'week') {
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - now.getDay());
+                startDate.setHours(0, 0, 0, 0);
+            } else if (range === '15days') {
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - 14);
+                startDate.setHours(0, 0, 0, 0);
+            } else if (range === '30days') {
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - 29);
+                startDate.setHours(0, 0, 0, 0);
+            }
+
+            const filteredObservations = observations.filter(observation => {
+                const obsDate = new Date(observation.date);
+                return obsDate >= startDate && obsDate <= now;
+            });
+
+            const tagCount = new Map();
+            
+            filteredObservations.forEach(observation => {
+                const tags = observation[type] || [];
+                tags.forEach(tag => {
+                    tagCount.set(tag, (tagCount.get(tag) || 0) + 1);
+                });
+            });
+
+            // Sort by count in descending order and take top 10
+            const sortedTags = Array.from(tagCount.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            return {
+                labels: sortedTags.map(([tag]) => tag.charAt(0).toUpperCase() + tag.slice(1)),
+                datasets: [{
+                    data: sortedTags.map(([, count]) => count),
+                    backgroundColor: '#3b82f6',
+                    borderWidth: 0,
+                    borderRadius: 4
+                }]
+            };
+        }
+
+        // Update tag charts with date range
+        function updateTagCharts(observations, range) {
+            const chartConfigs = [
+                { id: 'feelingsChart', type: 'feelings', chart: feelingsChart },
+                { id: 'urgesChart', type: 'urges', chart: urgesChart }
+            ];
+
+            chartConfigs.forEach(config => {
+                const ctx = document.getElementById(config.id).getContext('2d');
+                
+                // Properly destroy the existing chart
+                if (config.type === 'feelings' && feelingsChart) {
+                    feelingsChart.destroy();
+                    feelingsChart = null;
+                } else if (config.type === 'urges' && urgesChart) {
+                    urgesChart.destroy();
+                    urgesChart = null;
+                }
+
+                const data = processTagData(observations, config.type, range);
+
+                const newChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${value} times (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#94a3b8'
+                                },
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
+                                },
+                                border: {
+                                    display: false
+                                }
+                            },
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#94a3b8',
+                                    precision: 0
+                                },
+                                grid: {
+                                    color: '#334155',
+                                    drawBorder: false
+                                },
+                                border: {
+                                    display: false
+                                }
+                            }
+                        },
+                        layout: {
+                            padding: {
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                right: 30
+                            }
+                        },
+                        barPercentage: 0.95,
+                        categoryPercentage: 0.95,
+                        barThickness: 25
+                    }
+                });
+
+                // Update the global chart reference
+                if (config.type === 'feelings') {
+                    feelingsChart = newChart;
+                } else if (config.type === 'urges') {
+                    urgesChart = newChart;
+                }
+            });
+        }
+
+        // Initialize dashboard
+        async function initDashboard() {
+            // Reset chart references
+            journalChart = null;
+            distributionChart = null;
+            observationsChart = null;
+            feelingsChart = null;
+            urgesChart = null;
+
+            const journals = await fetchJournalStats();
+            const observations = await fetchObservationStats();
+            
+            // Initialize activity charts
+            const journalData = processJournalData(journals, 'monthly');
+            updateChart(journalData, 'monthly');
+
+            const observationsData = processObservationsData(observations, 'monthly');
+            updateObservationsChart(observationsData);
+
+            // Initialize distribution chart
+            updateDistributionChart(journals);
+
+            // Initialize tag charts with default range (this week)
+            updateTagCharts(allObservations, 'week');
+
+            // Add event listeners for tag time range buttons
+            document.querySelectorAll('.time-range-btn[data-target="tags"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active button
+                    document.querySelectorAll('.time-range-btn[data-target="tags"]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const range = btn.dataset.range;
+                    currentTagRange = range;
+                    updateTagCharts(allObservations, range);
+                });
+            });
+
+            // Add event listeners for journal navigation buttons
+            document.getElementById('prevPeriod').addEventListener('click', () => {
+                currentOffset++;
+                const data = processJournalData(allJournals, 'monthly');
+                updateChart(data, 'monthly');
+            });
+
+            document.getElementById('nextPeriod').addEventListener('click', () => {
+                currentOffset--;
+                const data = processJournalData(allJournals, 'monthly');
+                updateChart(data, 'monthly');
+            });
+
+            // Add event listeners for observations navigation buttons
+            document.getElementById('observationsPrevPeriod').addEventListener('click', () => {
+                observationsOffset++;
+                const data = processObservationsData(allObservations, 'monthly');
+                updateObservationsChart(data);
+            });
+
+            document.getElementById('observationsNextPeriod').addEventListener('click', () => {
+                observationsOffset--;
+                const data = processObservationsData(allObservations, 'monthly');
+                updateObservationsChart(data);
+            });
+        }
+
+        // Start the dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+        });
+    </script>
+</body>
+</html>

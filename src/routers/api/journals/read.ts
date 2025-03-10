@@ -9,9 +9,9 @@ const READ_JOURNAL_HANDLER = CreateRequestHandler(async function () {
     //     BO: this.res.locals.bo._id,
     // }, { __v: false }, { limit: this.local.limit, skip: this.local.limit * (this.local.page-1) }), "Successfully fetched data.");
 
-
+    const projection = this.req.query.projection ? { __v: false, ...JSON.parse(String(this.req?.query?.projection)) } : { __v: false };
     this.send_data({
-        journals: await JournalModel.find(this.local.filters, { __v: false }, { limit: this.local.limit, skip: this.local.limit * (this.local.page-1) }).sort({ date: -1 }),
+        journals: await JournalModel.find(this.local.filters, projection, { limit: this.local.limit, skip: this.local.limit * (this.local.page-1) }).sort({ date: -1 }),
         total: await JournalModel.countDocuments(this.local.filters),
     }, "Successfully fetched data.");
 }, [ServerError], undefined, [GetReadQueryValidator([10, 200])]);

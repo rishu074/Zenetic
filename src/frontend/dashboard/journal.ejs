@@ -410,7 +410,7 @@
         </div>
 
         <div class="filters-container">
-            <input type="text" class="search-input" placeholder="Search journals..." id="searchInput">
+            <input type="text" class="search-input" placeholder="Search by content or type..." id="searchInput">
             <input type="date" class="date-input" id="dateFilter">
             <select class="limit-select" id="limitSelect">
                 <option value="10">10 per page</option>
@@ -484,9 +484,12 @@
             try {
                 const filters = {};
                 
-                // Add search term to look for content
+                // Add search term to look for both content and special property
                 if (searchTerm) {
-                    filters.content = { $regex: searchTerm, $options: 'i' };
+                    filters.$or = [
+                        { content: { $regex: searchTerm, $options: 'i' } },
+                        { special: { $regex: searchTerm, $options: 'i' } }
+                    ];
                 }
 
                 // Handle date filter to match MongoDB ISO date

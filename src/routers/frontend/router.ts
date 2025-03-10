@@ -11,7 +11,7 @@ FRONTEND_ROUTER.get("/", (req, res, next) => {
 })
 
 FRONTEND_ROUTER.get("/dashboard", Authentication, (req, res, next) => {
-    res.render("dashboard/index.ejs")
+    res.render("dashboard/dashboard.ejs")
 })
 
 // Journal route
