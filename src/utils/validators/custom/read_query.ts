@@ -29,10 +29,6 @@ export default function GetReadQueryValidator(limit: [number, number]) {
                 _throw_invalid_filters()
             };
             this.local.filters = JSON.parse(this.req.query.filters as string);
-
-            if(this.local.filters._id && !/^[0-9a-fA-F]{24}$/.test(this.local.filters._id)) {
-                delete this.local.filters._id
-            }
         } catch (error) {
             message = "Invalid json"
             _throw_invalid_filters()

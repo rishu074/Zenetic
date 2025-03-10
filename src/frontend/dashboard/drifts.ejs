@@ -24,16 +24,461 @@
             margin: 0 auto;
         }
 
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
         .page-title {
             font-size: 2rem;
             font-weight: 600;
             color: #f8fafc;
+        }
+
+        .filters-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .date-input {
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .date-input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .drifts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .drift-card {
+            background-color: #1e293b;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .drift-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .drift-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .drift-date {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .drift-topic {
+            font-size: 1.125rem;
+            color: #f8fafc;
+            line-height: 1.4;
+            word-break: break-word;
+            font-weight: 500;
+        }
+
+        .drift-observations {
+            margin-top: 0.5rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.375rem;
+            color: #f8fafc;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .page-btn:hover:not(.active) {
+            background-color: #334155;
+        }
+
+        .page-btn.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .limit-select {
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+            min-width: 100px;
+        }
+
+        .limit-select:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .limit-select option {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+
+        .pagination-info {
+            text-align: center;
+            color: #94a3b8;
             margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-meta {
+            flex: 1;
+        }
+
+        .modal-date {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-topic {
+            font-size: 1.25rem;
+            color: #f8fafc;
+            line-height: 1.4;
+            word-break: break-word;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #f8fafc;
+        }
+
+        .modal-body {
+            color: #e2e8f0;
+            line-height: 1.75;
+        }
+
+        .observation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .observation-item {
+            background-color: #0f172a;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #334155;
+        }
+
+        .observation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .observation-date {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #334155;
+            border-radius: 1rem;
+            color: #94a3b8;
+        }
+
+        .create-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .create-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cancel-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #475569;
+            border: none;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background-color: #64748b;
+        }
+
+        .submit-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .submit-btn:disabled {
+            background-color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .observation-selector {
+            background-color: #0f172a;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #334155;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .observation-input-group {
+            background-color: #0f172a;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #334155;
+            margin-bottom: 1rem;
+        }
+
+        .observation-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tag-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            min-height: 42px;
+        }
+
+        .tag-input {
+            flex: 1;
+            min-width: 120px;
+            background: none;
+            border: none;
+            color: #f8fafc;
+            font-size: 0.875rem;
+            padding: 0.25rem;
+        }
+
+        .tag-input::placeholder {
+            color: #64748b;
+        }
+
+        .add-observation-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #334155;
+            border: none;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .add-observation-btn:hover {
+            background-color: #475569;
+        }
+
+        .remove-observation-btn {
+            padding: 0.5rem;
+            background-color: #ef4444;
+            border: none;
+            border-radius: 0.375rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            align-self: flex-end;
+        }
+
+        .remove-observation-btn:hover {
+            background-color: #dc2626;
         }
 
         @media (max-width: 768px) {
             .main-content {
                 padding: 5rem 1rem 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .filters-container {
+                flex-direction: column;
+            }
+
+            .drifts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                width: auto;
             }
         }
     </style>
@@ -42,7 +487,549 @@
     <%- include('navbar') %>
     
     <main class="main-content">
-        <h1 class="page-title">Drifts</h1>
+        <div class="page-header">
+            <h1 class="page-title">Drifts</h1>
+            <button class="create-btn" onclick="showCreateModal()">Create Drift</button>
+        </div>
+
+        <div class="filters-container">
+            <input type="text" class="search-input" placeholder="Search by topic..." id="searchInput">
+            <input type="date" class="date-input" id="dateFilter">
+            <select class="limit-select" id="limitSelect">
+                <option value="10">10 per page</option>
+                <option value="25" selected>25 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+            </select>
+        </div>
+
+        <div class="drifts-grid" id="driftsGrid">
+            <!-- Drifts will be loaded here -->
+        </div>
+
+        <div class="pagination-info" id="paginationInfo">
+            <!-- Pagination info will be shown here -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be generated here -->
+        </div>
     </main>
+
+    <div id="driftModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-meta">
+                    <div class="modal-date" id="modalDate"></div>
+                    <div class="modal-topic" id="modalTopic"></div>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="observation-list" id="modalObservations">
+                    <!-- Observations will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="createDriftModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Drift</h2>
+                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="createDriftForm" class="create-form" onsubmit="handleCreateDrift(event)">
+                <div class="form-group">
+                    <label for="driftTopic" class="form-label">Topic</label>
+                    <input type="text" id="driftTopic" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="driftDate" class="form-label">Date</label>
+                    <input type="datetime-local" id="driftDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Observations</label>
+                    <div id="observationsContainer">
+                        <!-- Observation inputs will be added here -->
+                    </div>
+                    <button type="button" class="add-observation-btn" onclick="addObservationInput()">Add Observation</button>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeCreateModal()">Cancel</button>
+                    <button type="submit" class="submit-btn" id="submitButton">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let searchTerm = '';
+        let dateFilter = '';
+        let limit = 25;
+        let totalDocs = 0;
+
+        async function fetchDrifts(page = 1) {
+            try {
+                const filters = {};
+                
+                if (searchTerm) {
+                    filters.topic = { $regex: searchTerm, $options: 'i' };
+                }
+
+                if (dateFilter) {
+                    const selectedDate = new Date(dateFilter);
+                    // Set time to start of day in UTC
+                    selectedDate.setUTCHours(0, 0, 0, 0);
+                    
+                    const nextDay = new Date(selectedDate);
+                    nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+                    
+                    filters.date = {
+                        $gte: selectedDate.toISOString(),
+                        $lt: nextDay.toISOString()
+                    };
+                }
+
+                const response = await fetch(`/api/drifts?filters=${JSON.stringify(filters)}&limit=${limit}&page=${page}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to fetch drifts');
+                }
+
+                totalDocs = data.data.total;
+                return data;
+            } catch (error) {
+                console.error('Error fetching drifts:', error);
+                return null;
+            }
+        }
+
+        async function fetchObservation(id) {
+            try {
+                const response = await fetch(`/api/observations/${id}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to fetch observation');
+                }
+
+                return data.data;
+            } catch (error) {
+                console.error('Error fetching observation:', error);
+                return null;
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function renderTags(tags) {
+            return tags.map(tag => `
+                <div class="tag">${tag}</div>
+            `).join('');
+        }
+
+        function renderDrifts(drifts) {
+            const grid = document.getElementById('driftsGrid');
+            grid.innerHTML = '';
+
+            if (!drifts || drifts.length === 0) {
+                grid.innerHTML = '<div class="loading">No drifts found</div>';
+                return;
+            }
+
+            drifts.forEach(drift => {
+                const card = document.createElement('div');
+                card.className = 'drift-card';
+                card.innerHTML = `
+                    <div class="drift-meta">
+                        <div class="drift-date">${formatDate(drift.date)}</div>
+                        <div class="drift-topic">${drift.topic}</div>
+                    </div>
+                    <div class="drift-observations">
+                        ${drift.observations.length} observation${drift.observations.length !== 1 ? 's' : ''}
+                    </div>
+                `;
+                card.onclick = () => showDrift(drift);
+                grid.appendChild(card);
+            });
+        }
+
+        function updatePaginationInfo() {
+            const startItem = (currentPage - 1) * limit + 1;
+            const endItem = Math.min(currentPage * limit, totalDocs);
+            const info = document.getElementById('paginationInfo');
+            info.textContent = `Showing ${startItem}-${endItem} of ${totalDocs} drifts`;
+        }
+
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = 'Previous';
+                prevBtn.onclick = () => loadPage(currentPage - 1);
+                pagination.appendChild(prevBtn);
+            }
+
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            if (startPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'page-btn';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => loadPage(1);
+                pagination.appendChild(firstBtn);
+
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-btn';
+                    ellipsis.textContent = '...';
+                    ellipsis.style.cursor = 'default';
+                    pagination.appendChild(ellipsis);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => loadPage(i);
+                pagination.appendChild(pageBtn);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-btn';
+                    ellipsis.textContent = '...';
+                    ellipsis.style.cursor = 'default';
+                    pagination.appendChild(ellipsis);
+                }
+
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'page-btn';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => loadPage(totalPages);
+                pagination.appendChild(lastBtn);
+            }
+
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Next';
+                nextBtn.onclick = () => loadPage(currentPage + 1);
+                pagination.appendChild(nextBtn);
+            }
+
+            updatePaginationInfo();
+        }
+
+        async function loadPage(page) {
+            currentPage = page;
+            const driftsGrid = document.getElementById('driftsGrid');
+            driftsGrid.innerHTML = '<div class="loading">Loading drifts...</div>';
+
+            const data = await fetchDrifts(page);
+            if (data) {
+                renderDrifts(data.data.drifts);
+                const totalPages = Math.ceil(data.data.total / limit);
+                renderPagination(totalPages);
+            }
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const dateFilterInput = document.getElementById('dateFilter');
+        const limitSelect = document.getElementById('limitSelect');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchTerm = e.target.value;
+                currentPage = 1;
+                loadPage(1);
+            }, 500);
+        });
+
+        dateFilterInput.addEventListener('change', (e) => {
+            dateFilter = e.target.value;
+            currentPage = 1;
+            loadPage(1);
+        });
+
+        limitSelect.addEventListener('change', (e) => {
+            limit = parseInt(e.target.value);
+            currentPage = 1;
+            loadPage(1);
+        });
+
+        async function fetchObservations(ids) {
+            try {
+                const filters = { _id: { $in: ids } };
+                const response = await fetch(`/api/observations?filters=${JSON.stringify(filters)}&limit=100&page=1`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to fetch observations');
+                }
+
+                return data.data.observations;
+            } catch (error) {
+                console.error('Error fetching observations:', error);
+                return [];
+            }
+        }
+
+        function createTagInput(containerId, placeholder) {
+            const container = document.createElement('div');
+            container.className = 'tag-input-container';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'tag-input';
+            input.placeholder = placeholder;
+            
+            const tags = new Set();
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    const value = input.value.trim();
+                    if (value && !tags.has(value)) {
+                        tags.add(value);
+                        renderTags();
+                    }
+                    input.value = '';
+                }
+            });
+
+            function renderTags() {
+                const existingTags = container.querySelectorAll('.tag');
+                existingTags.forEach(tag => tag.remove());
+                
+                tags.forEach(tag => {
+                    const tagElement = document.createElement('div');
+                    tagElement.className = 'tag';
+                    tagElement.innerHTML = `
+                        ${tag}
+                        <span style="cursor: pointer; margin-left: 4px;" onclick="this.parentElement.remove(); tags.delete('${tag}');">&times;</span>
+                    `;
+                    container.insertBefore(tagElement, input);
+                });
+            }
+
+            container.appendChild(input);
+            return { container, getTags: () => Array.from(tags) };
+        }
+
+        function addObservationInput() {
+            const container = document.getElementById('observationsContainer');
+            const observationGroup = document.createElement('div');
+            observationGroup.className = 'observation-input-group';
+
+            const inputs = document.createElement('div');
+            inputs.className = 'observation-inputs';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'remove-observation-btn';
+            removeBtn.textContent = 'Remove';
+            removeBtn.onclick = () => observationGroup.remove();
+
+            const { container: feelingsContainer, getTags: getFeelingsTags } = createTagInput('feelings', 'Type feelings and press Enter...');
+            const { container: urgesContainer, getTags: getUrgesTags } = createTagInput('urges', 'Type urges and press Enter...');
+            const { container: sequencesContainer, getTags: getSequencesTags } = createTagInput('sequences', 'Type sequences and press Enter...');
+
+            inputs.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label">Feelings</label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Urges</label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sequences</label>
+                </div>
+            `;
+
+            // Insert tag inputs after their respective labels
+            const groups = inputs.querySelectorAll('.form-group');
+            groups[0].appendChild(feelingsContainer);
+            groups[1].appendChild(urgesContainer);
+            groups[2].appendChild(sequencesContainer);
+
+            observationGroup.appendChild(removeBtn);
+            observationGroup.appendChild(inputs);
+
+            // Add methods to get the tags
+            observationGroup.getObservation = () => ({
+                feelings: getFeelingsTags(),
+                urges: getUrgesTags(),
+                sequences: getSequencesTags()
+            });
+
+            container.appendChild(observationGroup);
+        }
+
+        function renderObservationDetails(observation) {
+            return `
+                <div class="observation-item">
+                    <div class="observation-meta">
+                        <div class="observation-date">${formatDate(observation.date)}</div>
+                    </div>
+                    <div class="tag-list">
+                        ${renderTags(observation.feelings)}
+                    </div>
+                    <div class="tag-list">
+                        ${renderTags(observation.urges)}
+                    </div>
+                    <div class="tag-list">
+                        ${renderTags(observation.sequences)}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function showDrift(drift) {
+            const modal = document.getElementById('driftModal');
+            const modalDate = document.getElementById('modalDate');
+            const modalTopic = document.getElementById('modalTopic');
+            const modalObservations = document.getElementById('modalObservations');
+
+            modalDate.textContent = formatDate(drift.date);
+            modalTopic.textContent = drift.topic;
+            modalObservations.innerHTML = '<div class="loading">Loading observations...</div>';
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            // Fetch and render observations
+            const observations = await fetchObservations(drift.observations);
+            if (observations.length > 0) {
+                modalObservations.innerHTML = observations.map(renderObservationDetails).join('');
+            } else {
+                modalObservations.innerHTML = '<div class="loading">No observations found</div>';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('driftModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function showCreateModal() {
+            const modal = document.getElementById('createDriftModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Set default date to current date and time
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('driftDate').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
+            // Load observations for selection
+            loadObservationsForSelector();
+            
+            document.getElementById('driftTopic').focus();
+        }
+
+        function closeCreateModal() {
+            const modal = document.getElementById('createDriftModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            document.getElementById('createDriftForm').reset();
+            document.getElementById('observationsContainer').innerHTML = '';
+        }
+
+        async function handleCreateDrift(event) {
+            event.preventDefault();
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Creating...';
+
+            try {
+                const topic = document.getElementById('driftTopic').value;
+                const date = document.getElementById('driftDate').value;
+                
+                // Get all observations data
+                const observationGroups = document.querySelectorAll('.observation-input-group');
+                const observations = Array.from(observationGroups).map(group => group.getObservation());
+
+                const response = await fetch('/api/drifts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        topic,
+                        date: new Date(date).toISOString(),
+                        observations
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create drift');
+                }
+
+                closeCreateModal();
+                loadPage(1);
+            } catch (error) {
+                console.error('Error creating drift:', error);
+                alert('Failed to create drift. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create';
+            }
+        }
+
+        document.getElementById('driftModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('createDriftModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeCreateModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeCreateModal();
+            }
+        });
+
+        // Initial load
+        loadPage(1);
+    </script>
 </body>
-</html> 
+</html>
