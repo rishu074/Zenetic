@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenetic - Thought</title>
+    <title>Zenetic - Observations</title>
     <style>
         * {
             margin: 0;
@@ -24,16 +24,411 @@
             margin: 0 auto;
         }
 
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
         .page-title {
             font-size: 2rem;
             font-weight: 600;
             color: #f8fafc;
+        }
+
+        .filters-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .date-input {
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .date-input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .observations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .observation-card {
+            background-color: #1e293b;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .observation-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .observation-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1rem;
+        }
+
+        .observation-date {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .observation-content {
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #334155;
+            border-radius: 1rem;
+            color: #94a3b8;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.375rem;
+            color: #f8fafc;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .page-btn:hover:not(.active) {
+            background-color: #334155;
+        }
+
+        .page-btn.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .limit-select {
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+            min-width: 100px;
+        }
+
+        .limit-select:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .limit-select option {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+
+        .pagination-info {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #0f172a;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            border: 1px solid #1e293b;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-meta {
+            flex: 1;
+        }
+
+        .modal-date {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #f8fafc;
+        }
+
+        .modal-body {
+            color: #e2e8f0;
+            line-height: 1.75;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+        }
+
+        .create-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .create-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .tag-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            min-height: 42px;
+            align-items: flex-start;
+        }
+
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #334155;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            margin: 0.25rem;
+        }
+
+        .tag-input {
+            flex: 1;
+            min-width: 120px;
+            background: none;
+            border: none;
+            color: #f8fafc;
+            font-size: 0.875rem;
+            padding: 0.375rem;
+        }
+
+        .tag-input::placeholder {
+            color: #64748b;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            color: #94a3b8;
+            margin-left: 0.25rem;
+            font-size: 1.25rem;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tag-remove:hover {
+            color: #f8fafc;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .cancel-btn {
+            padding: 0.625rem 1.25rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.375rem;
+            color: #f8fafc;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background-color: #334155;
+        }
+
+        .submit-btn {
+            padding: 0.625rem 1.25rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.375rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .submit-btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
         }
 
         @media (max-width: 768px) {
             .main-content {
                 padding: 5rem 1rem 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .filters-container {
+                flex-direction: column;
+            }
+
+            .observations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                width: auto;
             }
         }
     </style>
@@ -42,7 +437,514 @@
     <%- include('navbar') %>
     
     <main class="main-content">
-        <h1 class="page-title">Observations</h1>
+        <div class="page-header">
+            <h1 class="page-title">Observations</h1>
+            <button class="create-btn" onclick="showCreateModal()">Create Observation</button>
+        </div>
+
+        <div class="filters-container">
+            <input type="text" class="search-input" placeholder="Search observations..." id="searchInput">
+            <input type="date" class="date-input" id="dateFilter">
+            <select class="limit-select" id="limitSelect">
+                <option value="10">10 per page</option>
+                <option value="25" selected>25 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+            </select>
+        </div>
+
+        <div class="observations-grid" id="observationsGrid">
+            <!-- Observations will be loaded here -->
+        </div>
+
+        <div class="pagination-info" id="paginationInfo">
+            <!-- Pagination info will be shown here -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be generated here -->
+        </div>
     </main>
+
+    <div id="observationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-meta">
+                    <div class="modal-date" id="modalDate"></div>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">Feelings</div>
+                    <div class="tag-list" id="modalFeelings"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Urges</div>
+                    <div class="tag-list" id="modalUrges"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Sequences</div>
+                    <div class="tag-list" id="modalSequences"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="createObservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Observation</h2>
+                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="createObservationForm" class="create-form" onsubmit="handleCreateObservation(event)">
+                <div class="form-group">
+                    <label for="observationDate" class="form-label">Date</label>
+                    <input type="datetime-local" id="observationDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Feelings</label>
+                    <div class="tag-input-container" id="feelingsContainer">
+                        <div class="tag-list" id="feelingsTags"></div>
+                        <input type="text" class="tag-input" id="feelingsInput" placeholder="Type and press Enter to add...">
+                    </div>
+                    <div class="error-message" id="feelingsError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Urges</label>
+                    <div class="tag-input-container" id="urgesContainer">
+                        <div class="tag-list" id="urgesTags"></div>
+                        <input type="text" class="tag-input" id="urgesInput" placeholder="Type and press Enter to add...">
+                    </div>
+                    <div class="error-message" id="urgesError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sequences</label>
+                    <div class="tag-input-container" id="sequencesContainer">
+                        <div class="tag-list" id="sequencesTags"></div>
+                        <input type="text" class="tag-input" id="sequencesInput" placeholder="Type and press Enter to add...">
+                    </div>
+                    <div class="error-message" id="sequencesError"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="submit-btn" id="submitButton">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let searchTerm = '';
+        let dateFilter = '';
+        let limit = 25;
+        let totalDocs = 0;
+        let tags = {
+            feelings: [],
+            urges: [],
+            sequences: []
+        };
+
+        async function fetchObservations(page = 1) {
+            try {
+                const filters = {};
+                
+                if (searchTerm) {
+                    filters.$or = [
+                        { feelings: { $regex: searchTerm, $options: 'i' } },
+                        { urges: { $regex: searchTerm, $options: 'i' } },
+                        { sequences: { $regex: searchTerm, $options: 'i' } }
+                    ];
+                }
+
+                if (dateFilter) {
+                    const selectedDate = new Date(dateFilter);
+                    const nextDay = new Date(selectedDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    
+                    filters.date = {
+                        $gte: selectedDate.toISOString(),
+                        $lt: nextDay.toISOString()
+                    };
+                }
+
+                const response = await fetch(`/api/observations?filters=${JSON.stringify(filters)}&limit=${limit}&page=${page}`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to fetch observations');
+                }
+
+                totalDocs = data.data.total;
+                return data;
+            } catch (error) {
+                console.error('Error fetching observations:', error);
+                return null;
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function renderTags(tags, containerClass = 'tag-list') {
+            return tags.map(tag => `
+                <div class="${containerClass === 'tag-list' ? 'tag' : 'tag-item'}">
+                    ${tag}
+                    ${containerClass !== 'tag-list' ? `<span class="tag-remove" onclick="removeTag(event, '${containerClass}', '${tag}')">&times;</span>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderObservations(observations) {
+            const grid = document.getElementById('observationsGrid');
+            grid.innerHTML = '';
+
+            if (!observations || observations.length === 0) {
+                grid.innerHTML = '<div class="loading">No observations found</div>';
+                return;
+            }
+
+            observations.forEach(observation => {
+                const card = document.createElement('div');
+                card.className = 'observation-card';
+                card.innerHTML = `
+                    <div class="observation-meta">
+                        <div class="observation-date">${formatDate(observation.date)}</div>
+                    </div>
+                    <div class="tag-list">
+                        ${renderTags(observation.feelings)}
+                    </div>
+                    <div class="tag-list">
+                        ${renderTags(observation.urges)}
+                    </div>
+                    <div class="tag-list">
+                        ${renderTags(observation.sequences)}
+                    </div>
+                `;
+                card.onclick = () => showObservation(observation);
+                grid.appendChild(card);
+            });
+        }
+
+        function updatePaginationInfo() {
+            const startItem = (currentPage - 1) * limit + 1;
+            const endItem = Math.min(currentPage * limit, totalDocs);
+            const info = document.getElementById('paginationInfo');
+            info.textContent = `Showing ${startItem}-${endItem} of ${totalDocs} observations`;
+        }
+
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = 'Previous';
+                prevBtn.onclick = () => loadPage(currentPage - 1);
+                pagination.appendChild(prevBtn);
+            }
+
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            if (startPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'page-btn';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => loadPage(1);
+                pagination.appendChild(firstBtn);
+
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-btn';
+                    ellipsis.textContent = '...';
+                    ellipsis.style.cursor = 'default';
+                    pagination.appendChild(ellipsis);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => loadPage(i);
+                pagination.appendChild(pageBtn);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-btn';
+                    ellipsis.textContent = '...';
+                    ellipsis.style.cursor = 'default';
+                    pagination.appendChild(ellipsis);
+                }
+
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'page-btn';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => loadPage(totalPages);
+                pagination.appendChild(lastBtn);
+            }
+
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Next';
+                nextBtn.onclick = () => loadPage(currentPage + 1);
+                pagination.appendChild(nextBtn);
+            }
+
+            updatePaginationInfo();
+        }
+
+        async function loadPage(page) {
+            currentPage = page;
+            const observationsGrid = document.getElementById('observationsGrid');
+            observationsGrid.innerHTML = '<div class="loading">Loading observations...</div>';
+
+            const data = await fetchObservations(page);
+            if (data) {
+                renderObservations(data.data.observations);
+                const totalPages = Math.ceil(data.data.total / limit);
+                renderPagination(totalPages);
+            }
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const dateFilterInput = document.getElementById('dateFilter');
+        const limitSelect = document.getElementById('limitSelect');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchTerm = e.target.value;
+                currentPage = 1;
+                loadPage(1);
+            }, 500);
+        });
+
+        dateFilterInput.addEventListener('change', (e) => {
+            dateFilter = e.target.value;
+            currentPage = 1;
+            loadPage(1);
+        });
+
+        limitSelect.addEventListener('change', (e) => {
+            limit = parseInt(e.target.value);
+            currentPage = 1;
+            loadPage(1);
+        });
+
+        function showObservation(observation) {
+            const modal = document.getElementById('observationModal');
+            const modalDate = document.getElementById('modalDate');
+            const modalFeelings = document.getElementById('modalFeelings');
+            const modalUrges = document.getElementById('modalUrges');
+            const modalSequences = document.getElementById('modalSequences');
+
+            modalDate.textContent = formatDate(observation.date);
+            modalFeelings.innerHTML = renderTags(observation.feelings);
+            modalUrges.innerHTML = renderTags(observation.urges);
+            modalSequences.innerHTML = renderTags(observation.sequences);
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('observationModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        function setupTagInputs() {
+            ['feelings', 'urges', 'sequences'].forEach(type => {
+                const input = document.getElementById(`${type}Input`);
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addTag(type, e.target.value.trim());
+                    }
+                });
+
+                // Allow focusing input by clicking container
+                document.getElementById(`${type}Container`).addEventListener('click', () => {
+                    input.focus();
+                });
+            });
+        }
+
+        function addTag(type, value) {
+            if (!value) return;
+            
+            // Remove any error message
+            document.getElementById(`${type}Error`).textContent = '';
+            
+            // Don't add duplicates
+            if (!tags[type].includes(value)) {
+                tags[type].push(value);
+                updateTagsDisplay(type);
+            }
+            
+            // Clear input
+            document.getElementById(`${type}Input`).value = '';
+        }
+
+        function removeTag(type, tag) {
+            tags[type] = tags[type].filter(t => t !== tag);
+            updateTagsDisplay(type);
+        }
+
+        function updateTagsDisplay(type) {
+            const container = document.getElementById(`${type}Tags`);
+            container.innerHTML = tags[type].map(tag => `
+                <div class="tag-item">
+                    ${tag}
+                    <span class="tag-remove" onclick="removeTag('${type}', '${tag}')">&times;</span>
+                </div>
+            `).join('');
+        }
+
+        function validateTags() {
+            let isValid = true;
+            ['feelings', 'urges', 'sequences'].forEach(type => {
+                const errorElement = document.getElementById(`${type}Error`);
+                if (tags[type].length === 0) {
+                    errorElement.textContent = `Please add at least one ${type.slice(0, -1)}`;
+                    isValid = false;
+                } else {
+                    errorElement.textContent = '';
+                }
+            });
+            return isValid;
+        }
+
+        function showCreateModal() {
+            const modal = document.getElementById('createObservationModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Set default date to current date and time
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('observationDate').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            
+            // Reset tags and errors
+            tags = {
+                feelings: [],
+                urges: [],
+                sequences: []
+            };
+            ['feelings', 'urges', 'sequences'].forEach(type => {
+                updateTagsDisplay(type);
+                document.getElementById(`${type}Error`).textContent = '';
+            });
+        }
+
+        function closeCreateModal() {
+            const modal = document.getElementById('createObservationModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            document.getElementById('createObservationForm').reset();
+            
+            // Clear tags and errors
+            tags = {
+                feelings: [],
+                urges: [],
+                sequences: []
+            };
+            ['feelings', 'urges', 'sequences'].forEach(type => {
+                updateTagsDisplay(type);
+                document.getElementById(`${type}Error`).textContent = '';
+            });
+        }
+
+        async function handleCreateObservation(event) {
+            event.preventDefault();
+            
+            if (!validateTags()) {
+                return;
+            }
+
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Creating...';
+
+            try {
+                const date = document.getElementById('observationDate').value;
+
+                const response = await fetch('/api/observations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date: date ? new Date(date).toISOString() : undefined,
+                        feelings: tags.feelings,
+                        urges: tags.urges,
+                        sequences: tags.sequences
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create observation');
+                }
+
+                closeCreateModal();
+                loadPage(1);
+            } catch (error) {
+                console.error('Error creating observation:', error);
+                alert(error.message || 'Failed to create observation. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create';
+            }
+        }
+
+        document.getElementById('observationModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('createObservationModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeCreateModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeCreateModal();
+            }
+        });
+
+        setupTagInputs();
+        loadPage(1);
+    </script>
 </body>
 </html> 

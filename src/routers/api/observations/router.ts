@@ -1,0 +1,9 @@
+import { Router } from "express";
+import READ_OBSERVATION_HANDLER from "./read";
+import CREATE_OBSERVATION_HANDLER from "./create/create";
+const OBSERVATIONS_ROUTER = Router();
+
+OBSERVATIONS_ROUTER.get("/", READ_OBSERVATION_HANDLER)
+OBSERVATIONS_ROUTER.post("/", CREATE_OBSERVATION_HANDLER)
+
+export default OBSERVATIONS_ROUTER;
