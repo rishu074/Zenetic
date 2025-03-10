@@ -24,16 +24,514 @@
             margin: 0 auto;
         }
 
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
         .page-title {
             font-size: 2rem;
             font-weight: 600;
             color: #f8fafc;
+        }
+
+        .filters-container {
+            display: grid;
+            grid-template-columns: minmax(200px, 400px) repeat(2, auto) auto;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: end;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            padding-left: 2.5rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2394a3b8' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 0.75rem center;
+            background-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .date-input {
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .date-input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        .limit-select {
+            padding: 0.75rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+            min-width: 100px;
+        }
+
+        .limit-select:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .limit-select option {
+            background-color: #1e293b;
+            color: #f8fafc;
+        }
+
+        .todos-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #f8fafc;
             margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .todos-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .todo-card {
+            background-color: #1e293b;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.2s, background-color 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .todo-card:hover {
+            transform: translateY(-1px);
+            border-color: #334155;
+        }
+
+        .todo-checkbox {
+            position: relative;
+            width: 1.5rem;
+            height: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .todo-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 1.5rem;
+            width: 1.5rem;
+            background-color: #334155;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .todo-checkbox:hover input ~ .checkmark {
+            background-color: #475569;
+        }
+
+        .todo-checkbox input:checked ~ .checkmark {
+            background-color: #059669;
+        }
+
+        .checkmark:after {
+            content: '';
+            position: absolute;
+            display: none;
+            width: 0.375rem;
+            height: 0.75rem;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            top: 0.25rem;
+        }
+
+        .todo-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .todo-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .todo-work {
+            font-size: 1.125rem;
+            color: #f8fafc;
+            transition: color 0.2s;
+        }
+
+        .todo-completed .todo-work {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+
+        .todo-meta {
+            display: flex;
+            gap: 1rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .todo-type, .todo-schedule {
+            padding: 0.25rem 0.75rem;
+            background-color: #334155;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+        }
+
+        .todo-schedule {
+            background-color: #1e40af;
+            color: #e2e8f0;
+        }
+
+        .todo-dates {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .complete-btn {
+            padding: 0.625rem 1.25rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .complete-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .complete-btn:disabled {
+            background-color: #475569;
+            cursor: not-allowed;
+        }
+
+        .completed-indicator {
+            padding: 0.625rem 1.25rem;
+            background-color: #059669;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .create-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .create-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #f8fafc;
+        }
+
+        .create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .form-select {
+            padding: 0.75rem 1rem;
+            background-color: #334155;
+            border: 1px solid #475569;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .form-select option {
+            background-color: #334155;
+            color: #f8fafc;
+        }
+
+        .schedule-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cancel-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #475569;
+            border: none;
+            border-radius: 0.5rem;
+            color: #f8fafc;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background-color: #64748b;
+        }
+
+        .submit-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: #3b82f6;
+            border: none;
+            border-radius: 0.5rem;
+            color: #ffffff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .submit-btn:disabled {
+            background-color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.375rem;
+            color: #f8fafc;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .page-btn:hover:not(.active) {
+            background-color: #334155;
+        }
+
+        .page-btn.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .pagination-info {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .date-filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .filter-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .todo-checkbox input:disabled {
+            cursor: not-allowed;
+        }
+
+        .todo-checkbox input:disabled ~ .checkmark {
+            background-color: #059669;
+            cursor: not-allowed;
+        }
+
+        .todo-checkbox:hover input:disabled ~ .checkmark {
+            background-color: #059669;
         }
 
         @media (max-width: 768px) {
             .main-content {
                 padding: 5rem 1rem 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .filters-container {
+                grid-template-columns: 1fr;
+            }
+
+            .todo-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .todo-meta {
+                margin-bottom: 1rem;
+            }
+
+            .schedule-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                width: auto;
+            }
+
+            .date-filter-group {
+                width: 100%;
             }
         }
     </style>
@@ -42,7 +540,551 @@
     <%- include('navbar') %>
     
     <main class="main-content">
-        <h1 class="page-title">Todo</h1>
+        <div class="page-header">
+            <h1 class="page-title">Todo</h1>
+            <button class="create-btn" onclick="showCreateModal()">Create Todo</button>
+        </div>
+
+        <div class="filters-container">
+            <input type="text" class="search-input" placeholder="Search todos..." id="searchInput">
+            <div class="date-filter-group">
+                <label for="createdAtFilter" class="filter-label">📅 Created Date</label>
+                <input type="date" class="date-input" id="createdAtFilter">
+            </div>
+            <div class="date-filter-group">
+                <label for="completedAtFilter" class="filter-label">✓ Completion Date</label>
+                <input type="date" class="date-input" id="completedAtFilter">
+            </div>
+            <select class="limit-select" id="limitSelect">
+                <option value="10">10 per page</option>
+                <option value="25" selected>25 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+            </select>
+        </div>
+
+        <div class="todos-section">
+            <h2 class="section-title">Incomplete Tasks</h2>
+            <div class="todos-grid" id="incompleteTodosGrid">
+                <!-- Incomplete todos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="todos-section">
+            <h2 class="section-title">Completed Tasks</h2>
+            <div class="todos-grid" id="completedTodosGrid">
+                <!-- Completed todos will be loaded here -->
+            </div>
+        </div>
+
+        <div class="pagination-info" id="paginationInfo">
+            <!-- Pagination info will be shown here -->
+        </div>
+
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be generated here -->
+        </div>
     </main>
+
+    <div id="createTodoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Todo</h2>
+                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="createTodoForm" class="create-form" onsubmit="handleCreateTodo(event)">
+                <div class="form-group">
+                    <label for="todoWork" class="form-label">Work</label>
+                    <input type="text" id="todoWork" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="todoType" class="form-label">Type</label>
+                    <select id="todoType" class="form-select" onchange="toggleScheduleInputs()" required>
+                        <option value="onetime">One Time</option>
+                        <option value="every">Recurring</option>
+                    </select>
+                </div>
+                <div id="scheduleInputs" class="form-group" style="display: none;">
+                    <label class="form-label">Schedule</label>
+                    <div class="schedule-inputs">
+                        <input type="number" id="scheduleAmount" class="form-input" min="1" placeholder="Amount">
+                        <select id="scheduleUnit" class="form-select">
+                            <option value="day">Day</option>
+                            <option value="week">Week</option>
+                            <option value="month">Month</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeCreateModal()">Cancel</button>
+                    <button type="submit" class="submit-btn" id="submitButton">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let searchTerm = '';
+        let createdAtFilter = '';
+        let completedAtFilter = '';
+        let limit = 25;
+        let totalDocs = 0;
+        let allTodos = []; // Store all todos in memory
+
+        async function fetchAllTodos() {
+            try {
+                // Get first page to determine total number of todos
+                const response1 = await fetch(`/api/todo?filters=${JSON.stringify({})}&limit=200&page=1`);
+                const data1 = await response1.json();
+                
+                if (!response1.ok) {
+                    throw new Error('Failed to fetch todos');
+                }
+
+                const totalTodos = data1.data.total;
+                let allTodos = [...data1.data.todos];
+
+                // Calculate how many more pages we need to fetch
+                const totalPages = Math.ceil(totalTodos / 200);
+
+                if (totalPages > 1) {
+                    // Create an array of promises for the remaining pages
+                    const remainingRequests = Array.from({ length: totalPages - 1 }, (_, i) => 
+                        fetch(`/api/todo?filters=${JSON.stringify({})}&limit=200&page=${i + 2}`)
+                            .then(res => res.json())
+                            .then(data => data.data.todos)
+                    );
+
+                    // Fetch all remaining pages in parallel
+                    const remainingTodos = await Promise.all(remainingRequests);
+                    
+                    // Merge all todos into a single array
+                    allTodos = [...allTodos, ...remainingTodos.flat()];
+                }
+
+                return allTodos;
+            } catch (error) {
+                console.error('Error fetching todos:', error);
+                return null;
+            }
+        }
+
+        function filterTodos(todos) {
+            if (!todos) return [];
+            
+            return todos.filter(todo => {
+                // Search term filter
+                if (searchTerm && !todo.work.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    return false;
+                }
+
+                // Created date filter
+                if (createdAtFilter) {
+                    const createdDate = new Date(todo.createdAt);
+                    const filterDate = new Date(createdAtFilter);
+                    if (createdDate.toDateString() !== filterDate.toDateString()) {
+                        return false;
+                    }
+                }
+
+                // Completed date filter
+                if (completedAtFilter) {
+                    if (!todo.completed || todo.completed.length === 0) {
+                        return false;
+                    }
+                    const completedDates = todo.completed.map(date => new Date(date).toDateString());
+                    const filterDate = new Date(completedAtFilter).toDateString();
+                    if (!completedDates.includes(filterDate)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
+        function paginateTodos(todos) {
+            const start = (currentPage - 1) * limit;
+            const end = start + limit;
+            return todos.slice(start, end);
+        }
+
+        async function loadPage(page) {
+            currentPage = page;
+            const incompleteTodosGrid = document.getElementById('incompleteTodosGrid');
+            const completedTodosGrid = document.getElementById('completedTodosGrid');
+            
+            incompleteTodosGrid.innerHTML = '<div class="loading">Loading todos...</div>';
+            completedTodosGrid.innerHTML = '<div class="loading">Loading completed todos...</div>';
+
+            // If we haven't fetched todos yet, fetch them
+            if (allTodos.length === 0) {
+                allTodos = await fetchAllTodos();
+            }
+
+            // Filter todos based on current filters
+            const filteredTodos = filterTodos(allTodos);
+            totalDocs = filteredTodos.length;
+
+            // Paginate the filtered todos
+            const paginatedTodos = paginateTodos(filteredTodos);
+
+            // Render the paginated todos
+            renderTodos(paginatedTodos);
+            const totalPages = Math.ceil(totalDocs / limit);
+            renderPagination(totalPages);
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getLatestCompletion(completed) {
+            if (!completed || completed.length === 0) return null;
+            return new Date(Math.max(...completed.map(date => new Date(date))));
+        }
+
+        function isTaskDue(todo) {
+            if (todo.type === 'onetime') {
+                return !todo.completed || todo.completed.length === 0;
+            }
+
+            const latestCompletion = getLatestCompletion(todo.completed);
+            if (!latestCompletion) return true;
+
+            const now = new Date();
+            const dueDate = new Date(latestCompletion);
+
+            switch (todo.every.unit) {
+                case 'day':
+                    dueDate.setDate(dueDate.getDate() + todo.every.amount);
+                    break;
+                case 'week':
+                    dueDate.setDate(dueDate.getDate() + (todo.every.amount * 7));
+                    break;
+                case 'month':
+                    dueDate.setMonth(dueDate.getMonth() + todo.every.amount);
+                    break;
+            }
+
+            return now >= dueDate;
+        }
+
+        function renderTodoCard(todo) {
+            const latestCompletion = getLatestCompletion(todo.completed);
+            const isDue = isTaskDue(todo);
+            const isCompleted = !isDue;
+
+            return `
+                <div class="todo-card ${isCompleted ? 'todo-completed' : ''}">
+                    <label class="todo-checkbox">
+                        <input type="checkbox" ${isCompleted ? 'checked disabled' : ''} onchange="completeTodo('${todo._id}', this)">
+                        <span class="checkmark"></span>
+                    </label>
+                    <div class="todo-info">
+                        <div class="todo-work">${todo.work}</div>
+                        <div class="todo-meta">
+                            <span class="todo-type">${todo.type}</span>
+                            ${todo.type === 'every' ? `
+                                <span class="todo-schedule">
+                                    every ${todo.every.amount} ${todo.every.unit}${todo.every.amount > 1 ? 's' : ''}
+                                </span>
+                            ` : ''}
+                            <div class="todo-dates">
+                                <span>Created: ${formatDate(todo.createdAt)}</span>
+                                ${latestCompletion ? `
+                                    <span>Last completed: ${formatDate(latestCompletion)}</span>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTodos(todos) {
+            const incompleteTodosGrid = document.getElementById('incompleteTodosGrid');
+            const completedTodosGrid = document.getElementById('completedTodosGrid');
+            
+            incompleteTodosGrid.innerHTML = '';
+            completedTodosGrid.innerHTML = '';
+
+            if (!todos || todos.length === 0) {
+                incompleteTodosGrid.innerHTML = '<div class="loading">No todos found</div>';
+                completedTodosGrid.innerHTML = '<div class="loading">No completed todos found</div>';
+                return;
+            }
+
+            if (completedAtFilter) {
+                incompleteTodosGrid.innerHTML = '<div class="loading">Switch to Created Date filter to see incomplete tasks</div>';
+                completedTodosGrid.innerHTML = todos.map(renderTodoCard).join('');
+                return;
+            }
+
+            const incompleteTodos = todos.filter(todo => isTaskDue(todo));
+            const completedTodos = todos.filter(todo => !isTaskDue(todo));
+
+            if (incompleteTodos.length === 0) {
+                incompleteTodosGrid.innerHTML = '<div class="loading">No incomplete todos</div>';
+            } else {
+                incompleteTodosGrid.innerHTML = incompleteTodos.map(renderTodoCard).join('');
+            }
+
+            if (completedTodos.length === 0) {
+                completedTodosGrid.innerHTML = '<div class="loading">No completed todos</div>';
+            } else {
+                completedTodosGrid.innerHTML = completedTodos.map(renderTodoCard).join('');
+            }
+        }
+
+        function updatePaginationInfo() {
+            const startItem = (currentPage - 1) * limit + 1;
+            const endItem = Math.min(currentPage * limit, totalDocs);
+            const info = document.getElementById('paginationInfo');
+            info.textContent = `Showing ${startItem}-${endItem} of ${totalDocs} todos`;
+        }
+
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = 'Previous';
+                prevBtn.onclick = () => loadPage(currentPage - 1);
+                pagination.appendChild(prevBtn);
+            }
+
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            if (startPage > 1) {
+                const firstBtn = document.createElement('button');
+                firstBtn.className = 'page-btn';
+                firstBtn.textContent = '1';
+                firstBtn.onclick = () => loadPage(1);
+                pagination.appendChild(firstBtn);
+
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-btn';
+                    ellipsis.textContent = '...';
+                    ellipsis.style.cursor = 'default';
+                    pagination.appendChild(ellipsis);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => loadPage(i);
+                pagination.appendChild(pageBtn);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'page-btn';
+                    ellipsis.textContent = '...';
+                    ellipsis.style.cursor = 'default';
+                    pagination.appendChild(ellipsis);
+                }
+
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'page-btn';
+                lastBtn.textContent = totalPages;
+                lastBtn.onclick = () => loadPage(totalPages);
+                pagination.appendChild(lastBtn);
+            }
+
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Next';
+                nextBtn.onclick = () => loadPage(currentPage + 1);
+                pagination.appendChild(nextBtn);
+            }
+
+            updatePaginationInfo();
+        }
+
+        async function completeTodo(id, checkbox) {
+            try {
+                checkbox.disabled = true;
+                const response = await fetch(`/api/todo?id=${id}`, {
+                    method: 'PUT'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to complete todo');
+                }
+
+                // Update the todo in our local array
+                const todo = allTodos.find(t => t._id === id);
+                if (todo) {
+                    todo.completed = todo.completed || [];
+                    todo.completed.push(new Date().toISOString());
+                }
+
+                // Smoothly transition the card's appearance
+                const card = checkbox.closest('.todo-card');
+                card.classList.add('todo-completed');
+                
+                // Reload the current page after a short delay
+                setTimeout(() => loadPage(currentPage), 300);
+            } catch (error) {
+                console.error('Error completing todo:', error);
+                alert('Failed to complete todo. Please try again.');
+                checkbox.checked = !checkbox.checked;
+            } finally {
+                checkbox.disabled = false;
+            }
+        }
+
+        function toggleScheduleInputs() {
+            const todoType = document.getElementById('todoType').value;
+            const scheduleInputs = document.getElementById('scheduleInputs');
+            const scheduleAmount = document.getElementById('scheduleAmount');
+            const scheduleUnit = document.getElementById('scheduleUnit');
+
+            if (todoType === 'every') {
+                scheduleInputs.style.display = 'block';
+                scheduleAmount.required = true;
+                scheduleUnit.required = true;
+            } else {
+                scheduleInputs.style.display = 'none';
+                scheduleAmount.required = false;
+                scheduleUnit.required = false;
+            }
+        }
+
+        function showCreateModal() {
+            const modal = document.getElementById('createTodoModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('todoWork').focus();
+        }
+
+        function closeCreateModal() {
+            const modal = document.getElementById('createTodoModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            document.getElementById('createTodoForm').reset();
+            toggleScheduleInputs();
+        }
+
+        async function handleCreateTodo(event) {
+            event.preventDefault();
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Creating...';
+
+            try {
+                const work = document.getElementById('todoWork').value;
+                const type = document.getElementById('todoType').value;
+                let todoData = { work, type };
+
+                if (type === 'every') {
+                    const amount = parseInt(document.getElementById('scheduleAmount').value);
+                    const unit = document.getElementById('scheduleUnit').value;
+                    todoData.every = { amount, unit };
+                }
+
+                const response = await fetch('/api/todo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(todoData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create todo');
+                }
+
+                const newTodo = await response.json();
+                // Add the new todo to our local array
+                allTodos.unshift(newTodo.data);
+
+                closeCreateModal();
+                loadPage(1);
+            } catch (error) {
+                console.error('Error creating todo:', error);
+                alert('Failed to create todo. Please try again.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create';
+            }
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        const createdAtFilterInput = document.getElementById('createdAtFilter');
+        const completedAtFilterInput = document.getElementById('completedAtFilter');
+        const limitSelect = document.getElementById('limitSelect');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchTerm = e.target.value;
+                currentPage = 1;
+                loadPage(1);
+            }, 300);
+        });
+
+        createdAtFilterInput.addEventListener('change', (e) => {
+            createdAtFilter = e.target.value;
+            completedAtFilter = ''; // Reset completed filter when using created filter
+            completedAtFilterInput.value = '';
+            currentPage = 1;
+            loadPage(1);
+        });
+
+        completedAtFilterInput.addEventListener('change', (e) => {
+            completedAtFilter = e.target.value;
+            createdAtFilter = ''; // Reset created filter when using completed filter
+            createdAtFilterInput.value = '';
+            currentPage = 1;
+            loadPage(1);
+        });
+
+        limitSelect.addEventListener('change', (e) => {
+            limit = parseInt(e.target.value);
+            currentPage = 1;
+            loadPage(1);
+        });
+
+        document.getElementById('createTodoModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeCreateModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeCreateModal();
+            }
+        });
+
+        // Initial load
+        loadPage(1);
+    </script>
 </body>
 </html> 

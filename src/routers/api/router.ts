@@ -5,6 +5,7 @@ import JOURNALS_ROUTER from "./journals/router";
 import Authentication from "../global-handlers/middlewares/Authentication";
 import OBSERVATIONS_ROUTER from "./observations/router";
 import DRIFTS_ROUTER from "./drifts/router";
+import TODO_ROUTER from "./todo/router";
 const API_ROUTER = Router()
 
 // Status endpoint
@@ -21,5 +22,8 @@ API_ROUTER.use("/observations", Authentication, OBSERVATIONS_ROUTER)
 
 // Drifts endpoint
 API_ROUTER.use("/drifts", Authentication, DRIFTS_ROUTER)
+
+// Todo endpoint
+API_ROUTER.use("/todo", Authentication, TODO_ROUTER)
 
 export default API_ROUTER;

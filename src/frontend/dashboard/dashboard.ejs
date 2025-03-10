@@ -248,17 +248,179 @@
         }
 
         .date-input {
+            padding: 0.75rem 1rem;
             background-color: #334155;
             border: none;
             border-radius: 0.5rem;
             color: #94a3b8;
-            padding: 0.5rem;
-            cursor: pointer;
         }
 
         .date-input::-webkit-calendar-picker-indicator {
             filter: invert(0.6);
             cursor: pointer;
+        }
+
+        /* New styles for Today's Tasks section */
+        .tasks-overview {
+            background-color: #1e293b;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .tasks-overview:hover {
+            transform: translateY(-2px);
+        }
+
+        .tasks-overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .tasks-overview-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #f8fafc;
+        }
+
+        .tasks-count {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background-color: #334155;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .task-item:hover {
+            background-color: #475569;
+            transform: translateY(-2px);
+        }
+
+        .task-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .task-title {
+            color: #f8fafc;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .task-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .task-type {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .task-schedule {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .complete-btn {
+            padding: 0.5rem 1rem;
+            background-color: #22c55e;
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .complete-btn:hover {
+            background-color: #16a34a;
+        }
+
+        /* Task Performance Graph styles */
+        .task-performance {
+            background-color: #1e293b;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .performance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .performance-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #f8fafc;
+        }
+
+        .performance-legend {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .performance-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .legend-expected {
+            background-color: #3b82f6;
+        }
+
+        .legend-completed {
+            background-color: #22c55e;
         }
 
         @media (max-width: 768px) {
@@ -352,6 +514,52 @@
             <h1 class="page-title">Dashboard</h1>
         </div>
 
+        <!-- Today's Tasks Section -->
+        <div class="tasks-overview" onclick="window.location.href='/dashboard/todo'">
+            <div class="tasks-overview-header">
+                <h2 class="tasks-overview-title">Today's Tasks</h2>
+                <span class="tasks-count" id="tasksCount">0 tasks</span>
+            </div>
+            <div class="tasks-list" id="tasksList">
+                <div class="loading">Loading tasks...</div>
+            </div>
+        </div>
+
+        <!-- Task Performance Graph -->
+        <div class="task-performance">
+            <div class="performance-header">
+                <h2 class="performance-title">Task Performance</h2>
+                <div class="performance-legend">
+                    <div class="performance-legend-item">
+                        <div class="legend-color legend-expected"></div>
+                        <span>Expected</span>
+                    </div>
+                    <div class="performance-legend-item">
+                        <div class="legend-color legend-completed"></div>
+                        <span>Completed</span>
+                    </div>
+                </div>
+            </div>
+            <div class="graph-controls">
+                <button class="graph-nav-btn" id="taskPrevPeriod">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Previous
+                </button>
+                <span class="current-period" id="taskCurrentPeriod"></span>
+                <button class="graph-nav-btn" id="taskNextPeriod">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="taskPerformanceChart"></canvas>
+            </div>
+        </div>
+
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value" id="totalJournals">-</div>
@@ -359,7 +567,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="thisWeekJournals">-</div>
-                <div class="stat-label">Journals This Week</div>
+                <div class="stat-label">Journals Last 7 Days</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="thisMonthJournals">-</div>
@@ -412,7 +620,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="thisWeekObservations">-</div>
-                <div class="stat-label">Observations This Week</div>
+                <div class="stat-label">Observations Last 7 Days</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="thisMonthObservations">-</div>
@@ -450,7 +658,7 @@
             <div class="tag-chart-header" style="grid-column: 1 / -1; margin-bottom: 1rem;">
                 <div style="display: flex; gap: 1rem; align-items: center;">
                     <div class="time-range-selector">
-                        <button class="time-range-btn active" data-range="week" data-target="tags">This Week</button>
+                        <button class="time-range-btn active" data-range="week" data-target="tags">Last 7 Days</button>
                         <button class="time-range-btn" data-range="15days" data-target="tags">Last 15 Days</button>
                         <button class="time-range-btn" data-range="30days" data-target="tags">Last 30 Days</button>
                     </div>
@@ -486,6 +694,9 @@
         let currentTagRange = 'week';
         let customStartDate = null;
         let customEndDate = null;
+        let performanceChart = null;
+        let currentPage = 1;
+        const DAYS_PER_PAGE = 7;
 
         // Colors for different journal types
         const typeColors = {
@@ -535,23 +746,23 @@
                 // Update total journals stat
                 document.getElementById('totalJournals').textContent = total;
 
-                // Calculate this week's and this month's journals
+                // Calculate last 7 days and this month's journals
                 const now = new Date();
-                const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay());
-                startOfWeek.setHours(0, 0, 0, 0);
+                const last7Days = new Date(now);
+                last7Days.setDate(now.getDate() - 6);
+                last7Days.setHours(0, 0, 0, 0);
 
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-                const thisWeekCount = allJournals.filter(journal => 
-                    new Date(journal.date) >= startOfWeek
+                const last7DaysCount = allJournals.filter(journal => 
+                    new Date(journal.date) >= last7Days
                 ).length;
 
                 const thisMonthCount = allJournals.filter(journal => 
                     new Date(journal.date) >= startOfMonth
                 ).length;
 
-                document.getElementById('thisWeekJournals').textContent = thisWeekCount;
+                document.getElementById('thisWeekJournals').textContent = last7DaysCount;
                 document.getElementById('thisMonthJournals').textContent = thisMonthCount;
 
                 return allJournals;
@@ -594,23 +805,23 @@
                 // Update total observations stat
                 document.getElementById('totalObservations').textContent = total;
 
-                // Calculate this week's and this month's observations
+                // Calculate last 7 days and this month's observations
                 const now = new Date();
-                const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay());
-                startOfWeek.setHours(0, 0, 0, 0);
+                const last7Days = new Date(now);
+                last7Days.setDate(now.getDate() - 6);
+                last7Days.setHours(0, 0, 0, 0);
 
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-                const thisWeekCount = allObservations.filter(observation => 
-                    new Date(observation.date) >= startOfWeek
+                const last7DaysCount = allObservations.filter(observation => 
+                    new Date(observation.date) >= last7Days
                 ).length;
 
                 const thisMonthCount = allObservations.filter(observation => 
                     new Date(observation.date) >= startOfMonth
                 ).length;
 
-                document.getElementById('thisWeekObservations').textContent = thisWeekCount;
+                document.getElementById('thisWeekObservations').textContent = last7DaysCount;
                 document.getElementById('thisMonthObservations').textContent = thisMonthCount;
 
                 // Update tag charts
@@ -1095,7 +1306,7 @@
             
             if (range === 'week') {
                 startDate = new Date(now);
-                startDate.setDate(now.getDate() - now.getDay());
+                startDate.setDate(now.getDate() - 6);
                 startDate.setHours(0, 0, 0, 0);
             } else if (range === '15days') {
                 startDate = new Date(now);
@@ -1240,6 +1451,13 @@
             observationsChart = null;
             feelingsChart = null;
             urgesChart = null;
+            performanceChart = null;
+
+            // Fetch and display today's tasks first
+            await fetchTodaysTasks();
+            
+            // Initialize task performance chart
+            await fetchTaskPerformance(1);
 
             const journals = await fetchJournalStats();
             const observations = await fetchObservationStats();
@@ -1254,7 +1472,7 @@
             // Initialize distribution chart
             updateDistributionChart(journals);
 
-            // Initialize tag charts with default range (this week)
+            // Initialize tag charts with default range (last 7 days)
             updateTagCharts(allObservations, 'week');
 
             // Add event listeners for tag time range buttons
@@ -1268,6 +1486,19 @@
                     currentTagRange = range;
                     updateTagCharts(allObservations, range);
                 });
+            });
+
+            // Add event listeners for task performance navigation
+            document.getElementById('taskPrevPeriod').addEventListener('click', () => {
+                currentPage++;
+                fetchTaskPerformance(currentPage);
+            });
+
+            document.getElementById('taskNextPeriod').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    fetchTaskPerformance(currentPage);
+                }
             });
 
             // Add event listeners for journal navigation buttons
@@ -1301,6 +1532,313 @@
         document.addEventListener('DOMContentLoaded', () => {
             initDashboard();
         });
+
+        async function fetchTodaysTasks() {
+            try {
+                // First fetch all todos with pagination
+                const allTodos = await fetchAllTodos();
+                
+                // Then apply filtering logic to the complete dataset
+                const dueTasks = allTodos.filter(todo => {
+                    if (todo.type === 'onetime') {
+                        return !todo.completed || todo.completed.length === 0;
+                    }
+
+                    const latestCompletion = todo.completed && todo.completed.length > 0 
+                        ? new Date(Math.max(...todo.completed.map(date => new Date(date))))
+                        : null;
+
+                    if (!latestCompletion) return true;
+
+                    const now = new Date();
+                    const dueDate = new Date(latestCompletion);
+
+                    switch (todo.every.unit) {
+                        case 'day':
+                            dueDate.setDate(dueDate.getDate() + todo.every.amount);
+                            break;
+                        case 'week':
+                            dueDate.setDate(dueDate.getDate() + (todo.every.amount * 7));
+                            break;
+                        case 'month':
+                            dueDate.setMonth(dueDate.getMonth() + todo.every.amount);
+                            break;
+                    }
+
+                    return now >= dueDate;
+                });
+
+                const tasksList = document.getElementById('tasksList');
+                const tasksCount = document.getElementById('tasksCount');
+                
+                tasksCount.textContent = `${dueTasks.length} task${dueTasks.length !== 1 ? 's' : ''}`;
+
+                if (dueTasks.length === 0) {
+                    tasksList.innerHTML = '<div class="task-item"><div class="task-info"><div class="task-title">No tasks due today</div></div></div>';
+                    return;
+                }
+
+                tasksList.innerHTML = dueTasks.map(todo => `
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-title">${todo.work}</div>
+                            <div class="task-meta">
+                                <span class="task-type">${todo.type}</span>
+                                ${todo.every ? `<span class="task-schedule">Every ${todo.every.amount} ${todo.every.unit}${todo.every.amount > 1 ? 's' : ''}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="complete-btn" onclick="completeTodo('${todo._id}')">Complete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error fetching today\'s tasks:', error);
+                const tasksList = document.getElementById('tasksList');
+                tasksList.innerHTML = '<div class="task-item"><div class="task-info"><div class="task-title">Error loading tasks</div></div></div>';
+            }
+        }
+
+        async function fetchAllTodos() {
+            try {
+                // Get first page to determine total number of todos
+                const response1 = await fetch(`/api/todo?filters=${JSON.stringify({})}&limit=200&page=1`);
+                const data1 = await response1.json();
+                
+                if (!response1.ok) {
+                    throw new Error('Failed to fetch todos');
+                }
+
+                const totalTodos = data1.data.total;
+                let allTodos = [...data1.data.todos];
+
+                // Calculate how many more pages we need to fetch
+                const totalPages = Math.ceil(totalTodos / 200);
+
+                if (totalPages > 1) {
+                    // Create an array of promises for the remaining pages
+                    const remainingRequests = Array.from({ length: totalPages - 1 }, (_, i) => 
+                        fetch(`/api/todo?filters=${JSON.stringify({})}&limit=200&page=${i + 2}`)
+                            .then(res => res.json())
+                            .then(data => data.data.todos)
+                    );
+
+                    // Fetch all remaining pages in parallel
+                    const remainingTodos = await Promise.all(remainingRequests);
+                    allTodos = [...allTodos, ...remainingTodos.flat()];
+                }
+
+                return allTodos;
+            } catch (error) {
+                console.error('Error fetching todos:', error);
+                return [];
+            }
+        }
+
+        async function fetchTaskPerformance(page = 1) {
+            try {
+                const endDate = new Date();
+                endDate.setDate(endDate.getDate() - (page - 1) * DAYS_PER_PAGE);
+                const startDate = new Date(endDate);
+                startDate.setDate(startDate.getDate() - (DAYS_PER_PAGE - 1));
+
+                // Format dates for display
+                const formatDate = date => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                document.getElementById('taskCurrentPeriod').textContent = 
+                    `${formatDate(startDate)} - ${formatDate(endDate)}`;
+
+                // Fetch all todos first
+                const allTodos = await fetchAllTodos();
+
+                // Prepare data for the chart
+                const dates = Array.from({length: DAYS_PER_PAGE}, (_, i) => {
+                    const date = new Date(startDate);
+                    date.setDate(date.getDate() + i);
+                    return date;
+                });
+
+                // Process the complete dataset
+                const performanceData = dates.map(date => {
+                    const dateStr = date.toISOString().split('T')[0];
+                    const dateStart = new Date(date);
+                    dateStart.setHours(0, 0, 0, 0);
+                    const dateEnd = new Date(date);
+                    dateEnd.setHours(23, 59, 59, 999);
+
+                    // Calculate completed tasks for this date
+                    const completedTasks = allTodos.filter(todo => {
+                        if (!todo.completed || todo.completed.length === 0) return false;
+                        return todo.completed.some(completionDate => {
+                            const completed = new Date(completionDate);
+                            return completed >= dateStart && completed <= dateEnd;
+                        });
+                    }).length;
+
+                    // Calculate expected tasks for this date
+                    const expectedTasks = allTodos.filter(todo => {
+                        if (todo.type === 'onetime') {
+                            return new Date(todo.createdAt) <= dateEnd;
+                        }
+
+                        // If the task has no completions, it's expected
+                        if (todo.completed?.length === 0) {
+                            return true;
+                        }
+
+
+                        const sortedCompletions = todo.completed.sort((a, b) => new Date(a) - new Date(b));
+                        // console.log("SortedCompletions: "+ sortedCompletions);
+
+                        for (let i = 0; i < sortedCompletions.length; i++) {
+                            const completion = sortedCompletions[i];
+                            if (new Date(todo.createdAt) >= dateEnd) {
+                                return false;
+                            }
+                            // console.log("Completion: "+ new Date(completion) + "\n", "DateStart: "+ dateStart + "\n", "DateEnd: "+ dateEnd+ "\n", "CreatedAt: "+ new Date(todo.createdAt));
+                            // console.log(i)
+                            
+                            if(new Date(completion) >= dateStart && i === 0) {
+                                return true;
+                            }
+                            
+
+                            if (i != 0) {
+                                const previousCompletion = sortedCompletions[i-1];
+                                const nextDueDate = new Date(previousCompletion);
+
+                                switch (todo.every.unit) {
+                                    case 'day':
+                                        nextDueDate.setDate(nextDueDate.getDate() + todo.every.amount);
+                                        break;
+                                    case 'week':
+                                        nextDueDate.setDate(nextDueDate.getDate() + (todo.every.amount * 7));
+                                        break;
+                                    case 'month':
+                                        nextDueDate.setMonth(nextDueDate.getMonth() + todo.every.amount);
+                                        break;
+                                }
+                                // console.log("NextDueDate: "+ nextDueDate);
+
+                                if (nextDueDate <= dateEnd) {
+                                    return true;
+                                }
+                            }
+
+
+                            
+                        }
+                    }).length;
+
+
+                    return {
+                        date: dateStr,
+                        completed: completedTasks,
+                        total: expectedTasks,
+                        percentage: expectedTasks > 0 ? Math.round((completedTasks / expectedTasks) * 100) : 0
+                    };
+                });
+
+                // Update the chart with the processed data
+                await updatePerformanceChart(performanceData);
+            } catch (error) {
+                console.error('Error fetching task performance:', error);
+                document.getElementById('taskPerformanceChart').innerHTML = '<div class="error">Error loading performance data</div>';
+            }
+        }
+
+        async function updatePerformanceChart(performanceData) {
+            const ctx = document.getElementById('taskPerformanceChart').getContext('2d');
+            
+            if (performanceChart) {
+                performanceChart.destroy();
+            }
+
+            performanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: performanceData.map(d => new Date(d.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })),
+                    datasets: [
+                        {
+                            label: 'Expected',
+                            data: performanceData.map(d => d.total),
+                            backgroundColor: '#3b82f6',
+                            borderColor: '#3b82f6',
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            order: 2
+                        },
+                        {
+                            label: 'Completed',
+                            data: performanceData.map(d => d.completed),
+                            backgroundColor: '#22c55e',
+                            borderColor: '#22c55e',
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: (items) => {
+                                    const date = new Date(performanceData[items[0].dataIndex].date);
+                                    return date.toLocaleDateString('en-US', { 
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    });
+                                },
+                                label: (context) => {
+                                    const label = context.dataset.label;
+                                    const value = context.raw;
+                                    const data = performanceData[context.dataIndex];
+                                    if (label === 'Completed') {
+                                        return `${label}: ${value} (${data.percentage}%)`;
+                                    }
+                                    return `${label}: ${value}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#334155'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                stepSize: 1,
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
