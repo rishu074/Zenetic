@@ -20,8 +20,8 @@ FRONTEND_ROUTER.get("/dashboard/journal", Authentication, (req, res, next) => {
 })
 
 // Thought route
-FRONTEND_ROUTER.get("/dashboard/thought", Authentication, (req, res, next) => {
-    res.render("dashboard/thought.ejs")
+FRONTEND_ROUTER.get("/dashboard/observations", Authentication, (req, res, next) => {
+    res.render("dashboard/observations.ejs")
 })
 
 // Todo route
