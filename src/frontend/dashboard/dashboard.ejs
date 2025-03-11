@@ -654,26 +654,87 @@
             </div>
         </div>
 
+        <h2 class="section-subheader">Most Common Patterns</h2>
+        <div class="time-range-selector" style="margin-bottom: 1rem;">
+            <button class="time-range-btn active" data-range="week" data-target="observation-tags">Last 7 Days</button>
+            <button class="time-range-btn" data-range="15days" data-target="observation-tags">Last 15 Days</button>
+            <button class="time-range-btn" data-range="30days" data-target="observation-tags">Last 30 Days</button>
+        </div>
         <div class="tag-stats-container">
-            <div class="tag-chart-header" style="grid-column: 1 / -1; margin-bottom: 1rem;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <div class="time-range-selector">
-                        <button class="time-range-btn active" data-range="week" data-target="tags">Last 7 Days</button>
-                        <button class="time-range-btn" data-range="15days" data-target="tags">Last 15 Days</button>
-                        <button class="time-range-btn" data-range="30days" data-target="tags">Last 30 Days</button>
-                    </div>
-                </div>
-            </div>
             <div class="tag-chart-container">
-                <h3 class="section-subheader">Common Feelings</h3>
+                <h3 class="graph-title">Most Common Feelings</h3>
                 <div class="chart-wrapper">
                     <canvas id="feelingsChart"></canvas>
                 </div>
             </div>
             <div class="tag-chart-container">
-                <h3 class="section-subheader">Common Urges</h3>
+                <h3 class="graph-title">Most Common Urges</h3>
                 <div class="chart-wrapper">
                     <canvas id="urgesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-header">Drifts</h2>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalDrifts">-</div>
+                <div class="stat-label">Total Drifts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="thisWeekDrifts">-</div>
+                <div class="stat-label">Drifts Last 7 Days</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="thisMonthDrifts">-</div>
+                <div class="stat-label">Drifts This Month</div>
+            </div>
+        </div>
+
+        <div class="graph-container">
+            <div class="graph-header">
+                <div class="time-range-selector">
+                    <button class="time-range-btn active" data-range="monthly" data-target="drifts">Monthly</button>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="driftsChart"></canvas>
+            </div>
+            <div class="graph-controls">
+                <button class="graph-nav-btn" id="driftsPrevPeriod">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Previous
+                </button>
+                <span class="current-period" id="driftsCurrentPeriod"></span>
+                <button class="graph-nav-btn" id="driftsNextPeriod">
+                    Next
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <h2 class="section-subheader">Most Common Patterns Leading to Drifts</h2>
+        <div class="time-range-selector" style="margin-bottom: 1rem;">
+            <button class="time-range-btn active" data-range="week" data-target="drift-tags">Last 7 Days</button>
+            <button class="time-range-btn" data-range="15days" data-target="drift-tags">Last 15 Days</button>
+            <button class="time-range-btn" data-range="30days" data-target="drift-tags">Last 30 Days</button>
+        </div>
+        <div class="tag-stats-container">
+            <div class="tag-chart-container">
+                <h3 class="graph-title">Feelings Leading to Drifts</h3>
+                <div class="chart-wrapper">
+                    <canvas id="driftFeelingsChart"></canvas>
+                </div>
+            </div>
+            <div class="tag-chart-container">
+                <h3 class="graph-title">Urges Leading to Drifts</h3>
+                <div class="chart-wrapper">
+                    <canvas id="driftUrgesChart"></canvas>
                 </div>
             </div>
         </div>
@@ -697,6 +758,14 @@
         let performanceChart = null;
         let currentPage = 1;
         const DAYS_PER_PAGE = 7;
+
+        // New variables for drift analytics
+        let driftsChart = null;
+        let driftFeelingsChart = null;
+        let driftUrgesChart = null;
+        let driftsOffset = 0;
+        let allDrifts = [];
+        let driftObservations = new Map();
 
         // Colors for different journal types
         const typeColors = {
@@ -1350,182 +1419,629 @@
 
         // Update tag charts with date range
         function updateTagCharts(observations, range) {
-            const chartConfigs = [
-                { id: 'feelingsChart', type: 'feelings', chart: feelingsChart },
-                { id: 'urgesChart', type: 'urges', chart: urgesChart }
-            ];
+            const feelingsCtx = document.getElementById('feelingsChart').getContext('2d');
+            const urgesCtx = document.getElementById('urgesChart').getContext('2d');
+            
+            if (feelingsChart) {
+                feelingsChart.destroy();
+                feelingsChart = null;
+            }
+            if (urgesChart) {
+                urgesChart.destroy();
+                urgesChart = null;
+            }
 
-            chartConfigs.forEach(config => {
-                const ctx = document.getElementById(config.id).getContext('2d');
-                
-                // Properly destroy the existing chart
-                if (config.type === 'feelings' && feelingsChart) {
-                    feelingsChart.destroy();
-                    feelingsChart = null;
-                } else if (config.type === 'urges' && urgesChart) {
-                    urgesChart.destroy();
-                    urgesChart = null;
-                }
+            const data = processTagData(observations, 'feelings', range);
+            const urgesData = processTagData(observations, 'urges', range);
 
-                const data = processTagData(observations, config.type, range);
-
-                const newChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: data,
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
+            feelingsChart = new Chart(feelingsCtx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            border: {
                                 display: false
+                            }
+                        },
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8',
+                                precision: 0
                             },
-                            tooltip: {
-                                callbacks: {
-                                    label: (context) => {
-                                        const value = context.raw || 0;
-                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                        const percentage = ((value / total) * 100).toFixed(1);
-                                        return `${value} times (${percentage}%)`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: '#94a3b8'
-                                },
-                                grid: {
-                                    display: false,
-                                    drawBorder: false
-                                },
-                                border: {
-                                    display: false
-                                }
+                            grid: {
+                                color: '#334155',
+                                drawBorder: false
                             },
-                            x: {
-                                beginAtZero: true,
-                                ticks: {
-                                    color: '#94a3b8',
-                                    precision: 0
-                                },
-                                grid: {
-                                    color: '#334155',
-                                    drawBorder: false
-                                },
-                                border: {
-                                    display: false
-                                }
+                            border: {
+                                display: false
                             }
-                        },
-                        layout: {
-                            padding: {
-                                top: 0,
-                                bottom: 0,
-                                left: 0,
-                                right: 30
-                            }
-                        },
-                        barPercentage: 0.95,
-                        categoryPercentage: 0.95,
-                        barThickness: 25
-                    }
-                });
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 30
+                        }
+                    },
+                    barPercentage: 0.95,
+                    categoryPercentage: 0.95,
+                    barThickness: 25
+                }
+            });
 
-                // Update the global chart reference
-                if (config.type === 'feelings') {
-                    feelingsChart = newChart;
-                } else if (config.type === 'urges') {
-                    urgesChart = newChart;
+            urgesChart = new Chart(urgesCtx, {
+                type: 'bar',
+                data: urgesData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8',
+                                precision: 0
+                            },
+                            grid: {
+                                color: '#334155',
+                                drawBorder: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 30
+                        }
+                    },
+                    barPercentage: 0.95,
+                    categoryPercentage: 0.95,
+                    barThickness: 25
                 }
             });
         }
 
-        // Initialize dashboard
-        async function initDashboard() {
-            // Reset chart references
-            journalChart = null;
-            distributionChart = null;
-            observationsChart = null;
-            feelingsChart = null;
-            urgesChart = null;
-            performanceChart = null;
+        // Fetch drifts data and update stats
+        async function fetchDriftStats() {
+            try {
+                let allDriftsTemp = [];
+                let currentPage = 1;
+                let hasMore = true;
 
-            // Fetch and display today's tasks first
-            await fetchTodaysTasks();
-            
-            // Initialize task performance chart
-            await fetchTaskPerformance(1);
+                // Fetch all drifts using pagination
+                while (hasMore) {
+                    const response = await fetch(`/api/drifts?filters={}&limit=200&page=${currentPage}&projection={}`);
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Failed to fetch drifts');
+                    }
 
-            const journals = await fetchJournalStats();
-            const observations = await fetchObservationStats();
-            
-            // Initialize activity charts
-            const journalData = processJournalData(journals, 'monthly');
-            updateChart(journalData, 'monthly');
+                    const drifts = data.data.drifts;
+                    allDriftsTemp = [...allDriftsTemp, ...drifts];
+                    
+                    // Check if we have more pages
+                    hasMore = drifts.length === 200 && allDriftsTemp.length < data.data.total;
+                    currentPage++;
 
-            const observationsData = processObservationsData(observations, 'monthly');
-            updateObservationsChart(observationsData);
+                    // Update loading state in UI
+                    document.getElementById('totalDrifts').textContent = `${allDriftsTemp.length}/${data.data.total}`;
+                }
 
-            // Initialize distribution chart
-            updateDistributionChart(journals);
+                allDrifts = allDriftsTemp;
+                const total = allDrifts.length;
 
-            // Initialize tag charts with default range (last 7 days)
-            updateTagCharts(allObservations, 'week');
+                // Update total drifts stat
+                document.getElementById('totalDrifts').textContent = total;
 
-            // Add event listeners for tag time range buttons
-            document.querySelectorAll('.time-range-btn[data-target="tags"]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Update active button
-                    document.querySelectorAll('.time-range-btn[data-target="tags"]').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
+                // Calculate last 7 days and this month's drifts
+                const now = new Date();
+                const last7Days = new Date(now);
+                last7Days.setDate(now.getDate() - 6);
+                last7Days.setHours(0, 0, 0, 0);
 
-                    const range = btn.dataset.range;
-                    currentTagRange = range;
-                    updateTagCharts(allObservations, range);
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+                const last7DaysCount = allDrifts.filter(drift => 
+                    new Date(drift.date) >= last7Days
+                ).length;
+
+                const thisMonthCount = allDrifts.filter(drift => 
+                    new Date(drift.date) >= startOfMonth
+                ).length;
+
+                document.getElementById('thisWeekDrifts').textContent = last7DaysCount;
+                document.getElementById('thisMonthDrifts').textContent = thisMonthCount;
+
+                // Collect all unique observation IDs from all drifts
+                const allObservationIds = [...new Set(allDrifts.flatMap(drift => drift.observations))];
+
+                // Batch fetch all observations in chunks of 100
+                const chunkSize = 100;
+                const observationChunks = [];
+                for (let i = 0; i < allObservationIds.length; i += chunkSize) {
+                    const chunk = allObservationIds.slice(i, i + chunkSize);
+                    observationChunks.push(chunk);
+                }
+
+                // Fetch observations in parallel chunks
+                const observationsResults = await Promise.all(
+                    observationChunks.map(chunk => fetchObservations(chunk))
+                );
+
+                // Flatten results and create a map for quick lookup
+                const observationsMap = new Map();
+                observationsResults.flat().forEach(obs => {
+                    observationsMap.set(obs._id, obs);
                 });
-            });
 
-            // Add event listeners for task performance navigation
-            document.getElementById('taskPrevPeriod').addEventListener('click', () => {
-                currentPage++;
-                fetchTaskPerformance(currentPage);
-            });
+                // Store observations in the driftObservations map
+                allDrifts.forEach(drift => {
+                    driftObservations.set(drift._id, 
+                        drift.observations
+                            .map(obsId => observationsMap.get(obsId))
+                            .filter(Boolean) // Remove any undefined entries
+                    );
+                });
 
-            document.getElementById('taskNextPeriod').addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    fetchTaskPerformance(currentPage);
+                return allDrifts;
+            } catch (error) {
+                console.error('Error fetching drift stats:', error);
+                return [];
+            }
+        }
+
+        // Optimized fetchObservations function
+        async function fetchObservations(ids) {
+            try {
+                const filters = { _id: { $in: ids } };
+                const response = await fetch(`/api/observations?filters=${JSON.stringify(filters)}&limit=${ids.length}&page=1`);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to fetch observations');
+                }
+
+                return data.data.observations;
+            } catch (error) {
+                console.error('Error fetching observations:', error);
+                return [];
+            }
+        }
+
+        // Process drifts data for different time ranges
+        function processDriftsData(drifts, range) {
+            const now = new Date();
+            const data = new Map();
+            
+            // Show 6 months per page
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i - (driftsOffset * 6), 1);
+                date.setHours(0, 0, 0, 0);
+                data.set(date.toISOString().split('T')[0], 0);
+            }
+
+            drifts.forEach(drift => {
+                const driftDate = new Date(drift.date);
+                const monthStart = new Date(driftDate.getFullYear(), driftDate.getMonth(), 1);
+                monthStart.setHours(0, 0, 0, 0);
+                const key = monthStart.toISOString().split('T')[0];
+                if (data.has(key)) {
+                    data.set(key, data.get(key) + 1);
                 }
             });
 
-            // Add event listeners for journal navigation buttons
-            document.getElementById('prevPeriod').addEventListener('click', () => {
-                currentOffset++;
-                const data = processJournalData(allJournals, 'monthly');
-                updateChart(data, 'monthly');
+            // Update period display
+            updateDriftsPeriodDisplay(Array.from(data.keys())[0], Array.from(data.keys())[data.size - 1], range);
+
+            // Update navigation buttons
+            updateDriftsNavigationButtons(drifts, range);
+
+            const sortedDates = Array.from(data.keys()).sort();
+            
+            return {
+                labels: sortedDates.map(date => {
+                    return new Date(date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                }),
+                datasets: [{
+                    label: 'Number of Drifts',
+                    data: sortedDates.map(date => data.get(date)),
+                    backgroundColor: '#ef4444',
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: false
+                }]
+            };
+        }
+
+        // Process drift patterns data
+        function processDriftPatternsData(range = 'week') {
+            const now = new Date();
+            let startDate;
+            
+            if (range === 'week') {
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - 6);
+                startDate.setHours(0, 0, 0, 0);
+            } else if (range === '15days') {
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - 14);
+                startDate.setHours(0, 0, 0, 0);
+            } else if (range === '30days') {
+                startDate = new Date(now);
+                startDate.setDate(now.getDate() - 29);
+                startDate.setHours(0, 0, 0, 0);
+            }
+
+            const feelingsCount = new Map();
+            const urgesCount = new Map();
+            
+            // Count feelings and urges from drift observations within the time range
+            for (const drift of allDrifts) {
+                const driftDate = new Date(drift.date);
+                if (driftDate >= startDate && driftDate <= now) {
+                    const observations = driftObservations.get(drift._id) || [];
+                    observations.forEach(observation => {
+                        observation.feelings.forEach(feeling => {
+                            feelingsCount.set(feeling, (feelingsCount.get(feeling) || 0) + 1);
+                        });
+                        observation.urges.forEach(urge => {
+                            urgesCount.set(urge, (urgesCount.get(urge) || 0) + 1);
+                        });
+                    });
+                }
+            }
+
+            // Sort by count in descending order and take top 10
+            const sortedFeelings = Array.from(feelingsCount.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const sortedUrges = Array.from(urgesCount.entries())
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            return {
+                feelings: {
+                    labels: sortedFeelings.map(([feeling]) => feeling.charAt(0).toUpperCase() + feeling.slice(1)),
+                    datasets: [{
+                        data: sortedFeelings.map(([, count]) => count),
+                        backgroundColor: '#ef4444',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                },
+                urges: {
+                    labels: sortedUrges.map(([urge]) => urge.charAt(0).toUpperCase() + urge.slice(1)),
+                    datasets: [{
+                        data: sortedUrges.map(([, count]) => count),
+                        backgroundColor: '#ef4444',
+                        borderWidth: 0,
+                        borderRadius: 4
+                    }]
+                }
+            };
+        }
+
+        // Update drifts chart
+        function updateDriftsChart(data) {
+            const ctx = document.getElementById('driftsChart').getContext('2d');
+            
+            if (driftsChart) {
+                driftsChart.destroy();
+            }
+
+            driftsChart = new Chart(ctx, {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: (tooltipItems) => {
+                                    const date = new Date(data.labels[tooltipItems[0].dataIndex]);
+                                    return date.toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long'
+                                    });
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#94a3b8'
+                            },
+                            grid: {
+                                color: '#334155',
+                                drawBorder: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update drift patterns charts
+        function updateDriftPatternsCharts(data) {
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#94a3b8'
+                        },
+                        grid: {
+                            display: false
+                        },
+                        border: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#94a3b8'
+                        },
+                        grid: {
+                            color: '#334155',
+                            drawBorder: false
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                }
+            };
+
+            // Update feelings chart
+            const feelingsCtx = document.getElementById('driftFeelingsChart').getContext('2d');
+            if (driftFeelingsChart) {
+                driftFeelingsChart.destroy();
+            }
+            driftFeelingsChart = new Chart(feelingsCtx, {
+                type: 'bar',
+                data: data.feelings,
+                options
             });
 
-            document.getElementById('nextPeriod').addEventListener('click', () => {
-                currentOffset--;
-                const data = processJournalData(allJournals, 'monthly');
-                updateChart(data, 'monthly');
+            // Update urges chart
+            const urgesCtx = document.getElementById('driftUrgesChart').getContext('2d');
+            if (driftUrgesChart) {
+                driftUrgesChart.destroy();
+            }
+            driftUrgesChart = new Chart(urgesCtx, {
+                type: 'bar',
+                data: data.urges,
+                options
             });
+        }
 
-            // Add event listeners for observations navigation buttons
-            document.getElementById('observationsPrevPeriod').addEventListener('click', () => {
-                observationsOffset++;
-                const data = processObservationsData(allObservations, 'monthly');
-                updateObservationsChart(data);
-            });
+        function updateDriftsPeriodDisplay(startDate, endDate, range) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const displayText = `${start.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`;
+            document.getElementById('driftsCurrentPeriod').textContent = displayText;
+        }
 
-            document.getElementById('observationsNextPeriod').addEventListener('click', () => {
-                observationsOffset--;
-                const data = processObservationsData(allObservations, 'monthly');
-                updateObservationsChart(data);
-            });
+        function updateDriftsNavigationButtons(drifts, range) {
+            const prevBtn = document.getElementById('driftsPrevPeriod');
+            const nextBtn = document.getElementById('driftsNextPeriod');
+
+            // Disable next button if we're at the current period
+            nextBtn.disabled = driftsOffset === 0;
+
+            // Disable prev button if we don't have any older data
+            const oldestDate = new Date(Math.min(...drifts.map(d => new Date(d.date))));
+            const now = new Date();
+            const periodSize = 180 * 24 * 60 * 60 * 1000; // ~6 months in milliseconds
+
+            const currentPeriodStart = new Date(now - (driftsOffset + 1) * periodSize);
+            prevBtn.disabled = oldestDate > currentPeriodStart;
+        }
+
+        // Add event listeners for drifts navigation buttons
+        document.getElementById('driftsPrevPeriod').addEventListener('click', () => {
+            driftsOffset++;
+            const data = processDriftsData(allDrifts, 'daily');
+            updateDriftsChart(data);
+        });
+
+        document.getElementById('driftsNextPeriod').addEventListener('click', () => {
+            driftsOffset--;
+            const data = processDriftsData(allDrifts, 'daily');
+            updateDriftsChart(data);
+        });
+
+        // Initialize dashboard
+        async function initDashboard() {
+            try {
+                // Fetch and display today's tasks first
+                await fetchTodaysTasks();
+                
+                // Initialize task performance chart
+                await fetchTaskPerformance(1);
+
+                // Fetch all data
+                const journals = await fetchJournalStats();
+                const observations = await fetchObservationStats();
+                const drifts = await fetchDriftStats();
+                
+                // Initialize activity charts
+                const journalData = processJournalData(journals, 'monthly');
+                updateChart(journalData, 'monthly');
+
+                // Initialize distribution chart
+                updateDistributionChart(journals);
+
+                // Initialize observations chart
+                const observationsData = processObservationsData(observations, 'monthly');
+                updateObservationsChart(observationsData);
+
+                // Initialize drifts charts
+                const driftsData = processDriftsData(drifts, 'monthly');
+                updateDriftsChart(driftsData);
+
+                const driftPatternsData = processDriftPatternsData();
+                updateDriftPatternsCharts(driftPatternsData);
+
+                // Initialize tag charts with default range (last 7 days)
+                updateTagCharts(observations, 'week');
+
+                // Add event listeners for observation tag time range buttons
+                document.querySelectorAll('.time-range-btn[data-target="observation-tags"]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        // Update active button
+                        document.querySelectorAll('.time-range-btn[data-target="observation-tags"]').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const range = btn.dataset.range;
+                        currentTagRange = range;
+                        updateTagCharts(observations, range);
+                    });
+                });
+
+                // Add event listeners for drift tag time range buttons
+                document.querySelectorAll('.time-range-btn[data-target="drift-tags"]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        // Update active button
+                        document.querySelectorAll('.time-range-btn[data-target="drift-tags"]').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const range = btn.dataset.range;
+                        const driftPatternsData = processDriftPatternsData(range);
+                        updateDriftPatternsCharts(driftPatternsData);
+                    });
+                });
+
+                // Add event listeners for tag time range buttons
+                document.querySelectorAll('.time-range-btn[data-target="tags"]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        // Update active button
+                        document.querySelectorAll('.time-range-btn[data-target="tags"]').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        const range = btn.dataset.range;
+                        currentTagRange = range;
+                        updateTagCharts(allObservations, range);
+                    });
+                });
+
+                // Add event listeners for task performance navigation
+                document.getElementById('taskPrevPeriod').addEventListener('click', () => {
+                    currentPage++;
+                    fetchTaskPerformance(currentPage);
+                });
+
+                document.getElementById('taskNextPeriod').addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        fetchTaskPerformance(currentPage);
+                    }
+                });
+
+                // Add event listeners for journal navigation buttons
+                document.getElementById('prevPeriod').addEventListener('click', () => {
+                    currentOffset++;
+                    const data = processJournalData(allJournals, 'monthly');
+                    updateChart(data, 'monthly');
+                });
+
+                document.getElementById('nextPeriod').addEventListener('click', () => {
+                    currentOffset--;
+                    const data = processJournalData(allJournals, 'monthly');
+                    updateChart(data, 'monthly');
+                });
+
+                // Add event listeners for observations navigation buttons
+                document.getElementById('observationsPrevPeriod').addEventListener('click', () => {
+                    observationsOffset++;
+                    const data = processObservationsData(allObservations, 'monthly');
+                    updateObservationsChart(data);
+                });
+
+                document.getElementById('observationsNextPeriod').addEventListener('click', () => {
+                    observationsOffset--;
+                    const data = processObservationsData(allObservations, 'monthly');
+                    updateObservationsChart(data);
+                });
+            } catch (error) {
+                console.error('Error initializing dashboard:', error);
+            }
         }
 
         // Start the dashboard
