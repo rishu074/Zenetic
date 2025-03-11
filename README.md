@@ -2,7 +2,7 @@
 
 > A thoughtfully designed productivity application, initially developed for personal use and now open-sourced to empower others in their productivity journey.
 
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-Latest-green)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.21.2-lightgrey)](https://expressjs.com/)
