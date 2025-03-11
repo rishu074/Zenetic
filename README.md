@@ -122,33 +122,25 @@ The name "Zenetic" is a portmanteau of "Zen" and "Genetic," reflecting the appli
 
 ### Feature Demonstrations
 
-> 📽️ Click on any link below to download and watch the demo videos
+1. **First Look**
+   > Overview of the entire application and main dashboard
+   ![First Look Demo](screenshots/first_look.gif)
 
-1. **First Look** - [▶️ Watch Demo (5.2MB)](screenshots/first_look.mp4)
-   - Get an overview of the entire application
-   - See the main dashboard and navigation
+2. **Todo Management**
+   > Task creation, management, and progress tracking
+   ![Todo Management Demo](screenshots/todo_example.gif)
 
-2. **Todo Management** - [▶️ Watch Demo (3.7MB)](screenshots/todo_example.mp4)
-   - Task creation and management
-   - Progress tracking interface
-   - Recurring tasks setup
+3. **Journaling**
+   > Daily journaling interface and archive
+   ![Journaling Demo](screenshots/journal_example.gif)
 
-3. **Journaling** - [▶️ Watch Demo (14MB)](screenshots/journal_example.mp4)
-   - Daily journal interface
-   - Entry creation and editing
-   - Journal archive browsing
+4. **Observations**
+   > Thought patterns and emotional state tracking
+   ![Observations Demo](screenshots/observation_example.gif)
 
-4. **Observations** - [▶️ Watch Demo (9.2MB)](screenshots/observation_example.mp4)
-   - Thought pattern tracking
-   - Emotional state monitoring
-   - Behavioral tendency analysis
-
-5. **Drift Tracking** - [▶️ Watch Demo (14MB)](screenshots/drifts_example.mp4)
-   - Attention pattern monitoring
-   - Focus tracking interface
-   - Drift analysis tools
-
-> Note: These are MP4 video files that you can download and play locally. File sizes are indicated for your convenience.
+5. **Drift Tracking**
+   > Attention pattern monitoring and analysis
+   ![Drift Tracking Demo](screenshots/drifts_example.gif)
 
 ## 🤝 Contributing
 
