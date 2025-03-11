@@ -117,8 +117,25 @@ The name "Zenetic" is a portmanteau of "Zen" and "Genetic," reflecting the appli
 
 ## 📸 Screenshots
 
-[Coming Soon]
-<!-- Add screenshots of key features and interfaces -->
+### Login Page
+![Login Page](screenshots/login_page.png)
+
+### Feature Demonstrations (Video Walkthroughs)
+
+1. **First Look**
+   - [Watch Demo](screenshots/first_look.mp4)
+
+2. **Todo Management**
+   - [Watch Demo](screenshots/todo_example.mp4)
+
+3. **Journaling**
+   - [Watch Demo](screenshots/journal_example.mp4)
+
+4. **Observations**
+   - [Watch Demo](screenshots/observation_example.mp4)
+
+5. **Drift Tracking**
+   - [Watch Demo](screenshots/drifts_example.mp4)
 
 ## 🤝 Contributing
 
