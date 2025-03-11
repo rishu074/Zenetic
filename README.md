@@ -115,42 +115,40 @@ The name "Zenetic" is a portmanteau of "Zen" and "Genetic," reflecting the appli
    - Analyze thought and emotional patterns
    - Examine drift tracking data
 
-## 📸 Screenshots
+## 📸 Screenshots & Demos
 
 ### Login Page
 ![Login Page](screenshots/login_page.png)
 
-### Feature Demonstrations (Video Walkthroughs)
+### Feature Demonstrations
 
-1. **First Look**
-   <video width="100%" controls>
-     <source src="screenshots/first_look.mp4" type="video/mp4">
-     Your browser does not support the video tag.
-   </video>
+> 📽️ Click on any link below to download and watch the demo videos
 
-2. **Todo Management**
-   <video width="100%" controls>
-     <source src="screenshots/todo_example.mp4" type="video/mp4">
-     Your browser does not support the video tag.
-   </video>
+1. **First Look** - [▶️ Watch Demo (5.2MB)](screenshots/first_look.mp4)
+   - Get an overview of the entire application
+   - See the main dashboard and navigation
 
-3. **Journaling**
-   <video width="100%" controls>
-     <source src="screenshots/journal_example.mp4" type="video/mp4">
-     Your browser does not support the video tag.
-   </video>
+2. **Todo Management** - [▶️ Watch Demo (3.7MB)](screenshots/todo_example.mp4)
+   - Task creation and management
+   - Progress tracking interface
+   - Recurring tasks setup
 
-4. **Observations**
-   <video width="100%" controls>
-     <source src="screenshots/observation_example.mp4" type="video/mp4">
-     Your browser does not support the video tag.
-   </video>
+3. **Journaling** - [▶️ Watch Demo (14MB)](screenshots/journal_example.mp4)
+   - Daily journal interface
+   - Entry creation and editing
+   - Journal archive browsing
 
-5. **Drift Tracking**
-   <video width="100%" controls>
-     <source src="screenshots/drifts_example.mp4" type="video/mp4">
-     Your browser does not support the video tag.
-   </video>
+4. **Observations** - [▶️ Watch Demo (9.2MB)](screenshots/observation_example.mp4)
+   - Thought pattern tracking
+   - Emotional state monitoring
+   - Behavioral tendency analysis
+
+5. **Drift Tracking** - [▶️ Watch Demo (14MB)](screenshots/drifts_example.mp4)
+   - Attention pattern monitoring
+   - Focus tracking interface
+   - Drift analysis tools
+
+> Note: These are MP4 video files that you can download and play locally. File sizes are indicated for your convenience.
 
 ## 🤝 Contributing
 
