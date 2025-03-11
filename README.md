@@ -75,14 +75,14 @@ The name "Zenetic" is a portmanteau of "Zen" and "Genetic," reflecting the appli
 3. Configure environment variables
    Create a `.env` file in the root directory with the following variables:
    ```env
-   PORT - Port number for the server to listen on
-NODE_ENV - Environment mode (development/production)
-HOST - Host address for the server
-HTTPS - HTTPS configuration
-CONSOLE_LOG_LEVEL - Logging level for console output
-APP_LOGS - Directory path for application logs
-MONGO_DB - MongoDB database name
-PASSWORD_HASH - Hash of the password that you wish to use.
+    PORT=8989
+    NODE_ENV=development
+    HOST=0.0.0.0
+    HTTPS=false
+    CONSOLE_LOG_LEVEL=info
+    APP_LOGS=logs
+    MONGO_DB=mongodb://localhost:27017/zenetic
+    PASSWORD_HASH="$2a$10$7RiPHTfshhpMPKNAxD154OA354qmbGGnK5aoipqZWDO3irBeQpFki"
    ```
 
 4. Build and run the application
