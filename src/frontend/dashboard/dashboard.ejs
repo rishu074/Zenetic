@@ -1544,6 +1544,7 @@
                         return !todo.completed || todo.completed.length === 0;
                     }
 
+
                     const latestCompletion = todo.completed && todo.completed.length > 0 
                         ? new Date(Math.max(...todo.completed.map(date => new Date(date))))
                         : null;
@@ -1677,15 +1678,31 @@
                     // Calculate expected tasks for this date
                     const expectedTasks = allTodos.filter(todo => {
                         if (todo.type === 'onetime') {
-                            return new Date(todo.createdAt) <= dateEnd;
+
+                            if (todo.completed && todo.completed.length === 0) {
+                                return new Date(todo.createdAt) <= dateEnd;
+
+
+                            } else if (todo.completed && todo.completed.length > 0) {
+                                // console.log("completed: "+ todo.completed);
+                                // console.log("dateEnd: "+ dateEnd);
+                                // console.log("createdAt: "+ todo.createdAt);
+                                return new Date(todo.createdAt) <= dateEnd && new Date(todo.completed[0]) >= dateStart;
+                             }
+
+
+                            // console.log("createdAt: "+ todo.createdAt);
+                            // console.log("dateEnd: "+ dateEnd); 
+                            
                         }
 
-                        // If the task has no completions, it's expected
-                        if (todo.completed?.length === 0) {
+                        // If the task has no completions (recurring), it's expected, it sh
+                        if (todo.completed?.length === 0 && new Date(todo.createdAt) <= dateEnd) {
                             return true;
                         }
 
 
+                        // If it has completions, sort them by date
                         const sortedCompletions = todo.completed.sort((a, b) => new Date(a) - new Date(b));
                         // console.log("SortedCompletions: "+ sortedCompletions);
 
@@ -1694,15 +1711,37 @@
                             if (new Date(todo.createdAt) >= dateEnd) {
                                 return false;
                             }
+
+                            // console.log("Completion: "+ new Date(completion) + "\n", "DateStart: "+ dateStart + "\n", "DateEnd: "+ dateEnd+ "\n", "CreatedAt: "+ new Date(todo.createdAt));
                             // console.log("Completion: "+ new Date(completion) + "\n", "DateStart: "+ dateStart + "\n", "DateEnd: "+ dateEnd+ "\n", "CreatedAt: "+ new Date(todo.createdAt));
                             // console.log(i)
                             
                             if(new Date(completion) >= dateStart && i === 0) {
                                 return true;
+                            } else if (new Date(completion) <= dateStart && sortedCompletions.length === 1) {
+                                
+
+                                // calculate the next due date
+                                const nextDueDate = new Date(completion);
+                                switch (todo.every.unit) {
+                                    case 'day':
+                                        nextDueDate.setDate(nextDueDate.getDate() + todo.every.amount);
+                                        break;
+                                    case 'week':
+                                        nextDueDate.setDate(nextDueDate.getDate() + (todo.every.amount * 7));
+                                        break;
+                                    case 'month':
+                                        nextDueDate.setMonth(nextDueDate.getMonth() + todo.every.amount);
+                                        break;
+                                } 
+
+                                if (nextDueDate <= dateEnd) {
+                                    return true;
+                                }
                             }
                             
 
-                            if (i != 0) {
+                            if (i != 0 && dateStart <= new Date(completion)) {
                                 const previousCompletion = sortedCompletions[i-1];
                                 const nextDueDate = new Date(previousCompletion);
 
