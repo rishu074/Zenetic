@@ -123,19 +123,34 @@ The name "Zenetic" is a portmanteau of "Zen" and "Genetic," reflecting the appli
 ### Feature Demonstrations (Video Walkthroughs)
 
 1. **First Look**
-   - [Watch Demo](screenshots/first_look.mp4)
+   <video width="100%" controls>
+     <source src="screenshots/first_look.mp4" type="video/mp4">
+     Your browser does not support the video tag.
+   </video>
 
 2. **Todo Management**
-   - [Watch Demo](screenshots/todo_example.mp4)
+   <video width="100%" controls>
+     <source src="screenshots/todo_example.mp4" type="video/mp4">
+     Your browser does not support the video tag.
+   </video>
 
 3. **Journaling**
-   - [Watch Demo](screenshots/journal_example.mp4)
+   <video width="100%" controls>
+     <source src="screenshots/journal_example.mp4" type="video/mp4">
+     Your browser does not support the video tag.
+   </video>
 
 4. **Observations**
-   - [Watch Demo](screenshots/observation_example.mp4)
+   <video width="100%" controls>
+     <source src="screenshots/observation_example.mp4" type="video/mp4">
+     Your browser does not support the video tag.
+   </video>
 
 5. **Drift Tracking**
-   - [Watch Demo](screenshots/drifts_example.mp4)
+   <video width="100%" controls>
+     <source src="screenshots/drifts_example.mp4" type="video/mp4">
+     Your browser does not support the video tag.
+   </video>
 
 ## 🤝 Contributing
 
