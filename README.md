@@ -1,6 +1,6 @@
 # Zenetic - Your Personal Productivity Sanctuary 🌟
 
-> A mindful productivity application that helps you track tasks, journal your thoughts, and achieve mental clarity through zen practices.
+> A thoughtfully designed productivity application, initially developed for personal use and now open-sourced to empower others in their productivity journey.
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue)](https://www.typescriptlang.org/)
@@ -9,62 +9,61 @@
 
 ## 🎯 Overview
 
-Zenetic is a personal productivity and mindfulness application that combines task management, journaling, and zen practices. The name "Zenetic" is a fusion of "Zen" (mindful presence) and "Genetic" (core patterns), reflecting the app's focus on cultivating mindful productivity habits.
+Zenetic is a comprehensive productivity application that enables users to manage tasks, maintain journals, monitor thoughts, emotions, and behavioral patterns, and analyze them through intuitive visualizations and statistical insights. While originally developed as a personal tool, it has been open-sourced to enable others to create their own productivity sanctuary.
+
+The name "Zenetic" is a portmanteau of "Zen" and "Genetic," reflecting the application's focus on achieving mindfulness and understanding one's inherent patterns.
 
 ### ✨ Key Features
 
 - **Task Management**
   - Create one-time and recurring tasks
-  - Track task completion status
-  - Smart recurring task reminders (weekly, bi-weekly, monthly)
-  - Intuitive task organization and prioritization
+  - Monitor task completion and progress
+  - Automated tracking for periodic tasks (weekly, bi-weekly, monthly)
 
 - **Journaling**
-  - Private, secure daily journal entries
-  - Track your personal growth journey
-  - Build a meaningful narrative of your experiences
-  - End-to-end encrypted for complete privacy
+  - Maintain daily journal entries
+  - Document and track your personal narrative
+  - Secure, private journaling environment
 
-- **Mindfulness Observations & Analytics**
-  - Track thought patterns, emotions, and behavioral tendencies
-  - Implementation of Zenoga practices (as described by PJ Saher)
-  - Comprehensive analytics dashboard
-  - Visual insights into personal patterns and trends
+- **Observations & Analytics**
+  - Monitor thought patterns, emotional states, and behavioral tendencies
+  - Implementation of practices from Zenoga (By PJ Saher)
+  - Comprehensive analytics of cognitive and emotional patterns
+  - Gain insights into personal tendencies and behavioral patterns
 
 - **Drift Tracking**
-  - Implement the Drift Watching practice from Zenoga
-  - Monitor focus deviations and attention patterns
-  - Visual analytics for understanding concentration trends
-  - Actionable insights for improving focus
+  - Implementation of the Drift Watching practice from Zenoga (By PJ Saher)
+  - Monitor and analyze attention patterns
+  - Visual representation of focus patterns through detailed graphs
 
 ## 🛠️ Tech Stack
 
-- **Backend Architecture**
-  - Node.js with Express framework
-  - TypeScript for type safety
-  - MongoDB with Mongoose ODM
-  - Winston for structured logging
-  - EJS templating engine
+- **Backend**
+  - Node.js with Express
+  - TypeScript
+  - MongoDB with Mongoose
+  - Winston (Logging)
+  - EJS (Templating)
 
-- **Security & Performance**
-  - bcrypt for secure authentication
-  - Compression middleware
-  - Environment-based configuration
-  - Secure cookie management
+- **Security & Utilities**
+  - bcrypt (Authentication)
+  - compression
+  - dotenv
+  - cookie management
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (LTS version recommended)
-- MongoDB (latest stable version)
+- Node.js (Latest LTS version)
+- MongoDB
 - Git
 
 ### Installation
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/zenetic.git
+   git clone https://github.com/rishu074/zenetic.git
    cd zenetic
    ```
 
@@ -74,24 +73,24 @@ Zenetic is a personal productivity and mindfulness application that combines tas
    ```
 
 3. Configure environment variables
-   Create a `.env` file in the root directory:
+   Create a `.env` file in the root directory with the following variables:
    ```env
-   PORT=3000                    # Server port number
-   NODE_ENV=development        # Environment mode (development/production)
-   HOST=localhost             # Server host address
-   HTTPS=false               # HTTPS configuration
-   CONSOLE_LOG_LEVEL=info    # Logging level
-   APP_LOGS=./logs          # Application logs directory
-   MONGO_DB=zenetic         # MongoDB database name
-   PASSWORD_HASH=           # Your bcrypt password hash
+   PORT - Port number for the server to listen on
+NODE_ENV - Environment mode (development/production)
+HOST - Host address for the server
+HTTPS - HTTPS configuration
+CONSOLE_LOG_LEVEL - Logging level for console output
+APP_LOGS - Directory path for application logs
+MONGO_DB - MongoDB database name
+PASSWORD_HASH - Hash of the password that you wish to use.
    ```
 
-4. Build and run
+4. Build and run the application
    ```bash
-   # Development mode
+   # For development
    npm run dev
 
-   # Production mode
+   # For production
    npm run build
    npm start
    ```
@@ -99,40 +98,43 @@ Zenetic is a personal productivity and mindfulness application that combines tas
 ## 📱 Usage Guide
 
 1. **Initial Setup**
-   - Complete the installation steps above
-   - Generate a password hash using [bcrypt-generator.com](https://bcrypt-generator.com/) (10 rounds)
-   - Set the generated hash in your `.env` file
-   - Start the application and log in with your chosen password
+   - Complete the installation process
+   - Configure the environment variables
+   - Generate a password hash using https://bcrypt-generator.com/ (10 rounds)
+   - Launch the application using your configured password
 
-2. **Core Features**
-   - Task Management: Create, organize, and track tasks
-   - Journaling: Record daily reflections and insights
-   - Mindfulness: Track thoughts and emotional patterns
-   - Drift Watching: Monitor and analyze focus patterns
+2. **Daily Usage**
+   - Task management and tracking
+   - Journal entry creation
+   - Thought pattern observation
+   - Drift monitoring
 
-3. **Analytics Dashboard**
-   - Task completion metrics
-   - Journal entry statistics
-   - Mindfulness pattern analysis
-   - Focus drift visualizations
+3. **Analytics & Insights**
+   - Review task completion metrics
+   - Access journal archives
+   - Analyze thought and emotional patterns
+   - Examine drift tracking data
 
-## 🔒 Security
+## 📸 Screenshots
 
-- End-to-end encryption for journal entries
-- Secure password hashing
-- Environment-based security configurations
-- Regular security updates
+[Coming Soon]
+<!-- Add screenshots of key features and interfaces -->
+
+## 🤝 Contributing
+
+Well contributing is a good thing, but honestly, I dont want to maintain this project because I dont get time. You can fork this and make your own version of zenetic.
 
 ## 📄 License
 
 This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🙏 Credits
 
-- Inspired by "Zenoga" by PJ Saher
-- Built with Express.js, MongoDB, and other open-source technologies
-- Special thanks to the open-source community
-
+- Zenoga - Book By PJ Saher (Highly recommended)
+- Express.js - Web application framework
+- MongoDB - Database
+- Winston - Logging
+- And all other open-source libraries used in this project
 ---
 
-Made with ❤️ by Rishu
+Made with dedication by Rishu
