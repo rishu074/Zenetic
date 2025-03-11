@@ -813,14 +813,25 @@
             
             const tags = new Set();
             
+            // Handle both keydown and input submit events
             input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ',') {
-                    e.preventDefault();
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Prevent form submission
                     const value = input.value.trim();
                     if (value && !tags.has(value)) {
                         tags.add(value);
                         renderTags();
                     }
+                    input.value = '';
+                }
+            });
+
+            // Add a blur event to handle mobile submissions
+            input.addEventListener('blur', () => {
+                const value = input.value.trim();
+                if (value && !tags.has(value)) {
+                    tags.add(value);
+                    renderTags();
                     input.value = '';
                 }
             });

@@ -779,10 +779,20 @@
         function setupTagInputs() {
             ['feelings', 'urges', 'sequences'].forEach(type => {
                 const input = document.getElementById(`${type}Input`);
+                
+                // Handle keydown event
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
-                        e.preventDefault();
+                        e.preventDefault(); // Prevent form submission
                         addTag(type, e.target.value.trim());
+                    }
+                });
+
+                // Add blur event for mobile devices
+                input.addEventListener('blur', () => {
+                    const value = input.value.trim();
+                    if (value) {
+                        addTag(type, value);
                     }
                 });
 
