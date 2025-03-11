@@ -1,6 +1,6 @@
 # Zenetic - Your Personal Productivity Sanctuary 🌟
 
-> Originally crafted for personal peace of mind, now open-sourced to help everyone achieve their zen state of productivity.
+> A mindful productivity application that helps you track tasks, journal your thoughts, and achieve mental clarity through zen practices.
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue)](https://www.typescriptlang.org/)
@@ -9,62 +9,62 @@
 
 ## 🎯 Overview
 
-Zenetic is a comprehensive personal productivity application designed to help you maintain focus, track progress, and achieve your goals. What started as a personal project to maintain peace of mind has evolved into a powerful tool that can benefit anyone looking to enhance their productivity and personal growth.
+Zenetic is a personal productivity and mindfulness application that combines task management, journaling, and zen practices. The name "Zenetic" is a fusion of "Zen" (mindful presence) and "Genetic" (core patterns), reflecting the app's focus on cultivating mindful productivity habits.
 
 ### ✨ Key Features
 
 - **Task Management**
-  - Create, organize, and prioritize tasks
-  - Set deadlines and reminders
+  - Create one-time and recurring tasks
   - Track task completion status
-  - Add detailed notes and subtasks
+  - Smart recurring task reminders (weekly, bi-weekly, monthly)
+  - Intuitive task organization and prioritization
 
 - **Journaling**
-  - Daily reflection capabilities
-  - Mood tracking
-  - Achievement logging
-  - Personal insights
+  - Private, secure daily journal entries
+  - Track your personal growth journey
+  - Build a meaningful narrative of your experiences
+  - End-to-end encrypted for complete privacy
 
-- **Observations & Analytics**
-  - Track patterns in productivity
-  - Visual progress reports
-  - Custom metrics tracking
-  - Data-driven insights
+- **Mindfulness Observations & Analytics**
+  - Track thought patterns, emotions, and behavioral tendencies
+  - Implementation of Zenoga practices (as described by PJ Saher)
+  - Comprehensive analytics dashboard
+  - Visual insights into personal patterns and trends
 
 - **Drift Tracking**
-  - Monitor goal deviations
-  - Identify productivity patterns
-  - Automated progress tracking
-  - Course correction suggestions
+  - Implement the Drift Watching practice from Zenoga
+  - Monitor focus deviations and attention patterns
+  - Visual analytics for understanding concentration trends
+  - Actionable insights for improving focus
 
 ## 🛠️ Tech Stack
 
-- **Backend**
-  - Node.js with Express
-  - TypeScript
-  - MongoDB with Mongoose
-  - Winston (Logging)
-  - EJS (Templating)
+- **Backend Architecture**
+  - Node.js with Express framework
+  - TypeScript for type safety
+  - MongoDB with Mongoose ODM
+  - Winston for structured logging
+  - EJS templating engine
 
-- **Security & Utilities**
-  - bcrypt (Authentication)
-  - compression
-  - dotenv
-  - cookie management
+- **Security & Performance**
+  - bcrypt for secure authentication
+  - Compression middleware
+  - Environment-based configuration
+  - Secure cookie management
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (Latest LTS version)
-- MongoDB
+- Node.js (LTS version recommended)
+- MongoDB (latest stable version)
 - Git
 
 ### Installation
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/rishu074/zenetic.git
+   git clone https://github.com/yourusername/zenetic.git
    cd zenetic
    ```
 
@@ -74,20 +74,24 @@ Zenetic is a comprehensive personal productivity application designed to help yo
    ```
 
 3. Configure environment variables
-   Create a `.env` file in the root directory with the following variables:
+   Create a `.env` file in the root directory:
    ```env
-   PORT=3000
-   MONGODB_URI=your_mongodb_connection_string
-   NODE_ENV=development
-   # Add other required environment variables
+   PORT=3000                    # Server port number
+   NODE_ENV=development        # Environment mode (development/production)
+   HOST=localhost             # Server host address
+   HTTPS=false               # HTTPS configuration
+   CONSOLE_LOG_LEVEL=info    # Logging level
+   APP_LOGS=./logs          # Application logs directory
+   MONGO_DB=zenetic         # MongoDB database name
+   PASSWORD_HASH=           # Your bcrypt password hash
    ```
 
-4. Build and run the application
+4. Build and run
    ```bash
-   # For development
+   # Development mode
    npm run dev
 
-   # For production
+   # Production mode
    npm run build
    npm start
    ```
@@ -95,75 +99,40 @@ Zenetic is a comprehensive personal productivity application designed to help yo
 ## 📱 Usage Guide
 
 1. **Initial Setup**
-   - Create an account
-   - Configure your preferences
-   - Set up your first productivity goals
+   - Complete the installation steps above
+   - Generate a password hash using [bcrypt-generator.com](https://bcrypt-generator.com/) (10 rounds)
+   - Set the generated hash in your `.env` file
+   - Start the application and log in with your chosen password
 
-2. **Daily Usage**
-   - Add and manage tasks
-   - Write journal entries
-   - Track observations
-   - Monitor progress
+2. **Core Features**
+   - Task Management: Create, organize, and track tasks
+   - Journaling: Record daily reflections and insights
+   - Mindfulness: Track thoughts and emotional patterns
+   - Drift Watching: Monitor and analyze focus patterns
 
-3. **Analytics & Insights**
-   - View productivity trends
-   - Analyze completion rates
-   - Check drift patterns
-   - Export reports
+3. **Analytics Dashboard**
+   - Task completion metrics
+   - Journal entry statistics
+   - Mindfulness pattern analysis
+   - Focus drift visualizations
 
-## 📸 Screenshots
+## 🔒 Security
 
-[Coming Soon]
-<!-- Add screenshots of key features and interfaces -->
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Here's how you can help:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Development Setup
-
-1. Follow the installation steps above
-2. Set up your development environment:
-   ```bash
-   npm install -D
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+- End-to-end encryption for journal entries
+- Secure password hashing
+- Environment-based security configurations
+- Regular security updates
 
 ## 📄 License
 
 This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Credits
+## 🙏 Acknowledgments
 
-- Express.js - Web application framework
-- MongoDB - Database
-- Winston - Logging
-- And all other open-source libraries used in this project
-
-## 🔮 Future Plans
-
-- Mobile application development
-- Integration with popular productivity tools
-- AI-powered insights and recommendations
-- Enhanced analytics and reporting
-- Community features and sharing capabilities
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-- Open an issue on GitHub
-- Check existing documentation
-- Join our community discussions
+- Inspired by "Zenoga" by PJ Saher
+- Built with Express.js, MongoDB, and other open-source technologies
+- Special thanks to the open-source community
 
 ---
 
-Made with ❤️ by the Zenetic team
+Made with ❤️ by Rishu
