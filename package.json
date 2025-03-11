@@ -19,12 +19,6 @@
     "url": "https://github.com/rishu074/zenetic/issues"
   },
   "homepage": "https://github.com/rishu074/zenetic#readme",
-  "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/node": "^22.13.1",
-    "typescript": "^5.7.3",
-    "@types/cookie": "^0.6.0"
-  },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/compression": "^1.7.5",
@@ -45,6 +39,10 @@
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.1",
+    "typescript": "^5.7.3",
+    "@types/cookie": "^0.6.0"
   }
 }
