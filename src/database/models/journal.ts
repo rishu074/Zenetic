@@ -9,7 +9,8 @@ export interface JournalI {
 const JournalSchema = new mongoose.Schema({
     special: {
         type: String,
-        required: true
+        required: true,
+        set: (special: string) => special.toLowerCase()
     },
     content: {
         type: String,

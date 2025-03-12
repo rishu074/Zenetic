@@ -10,11 +10,13 @@ export interface ObservationI {
 const ObservationSchema = new mongoose.Schema({
     feelings: {
         type: [String],
-        required: true
+        required: true,
+        set: (feelings: string[]) => feelings.map(f => f.toLowerCase())
     },
     urges: {
         type: [String],
-        required: true
+        required: true,
+        set: (urges: string[]) => urges.map(u => u.toLowerCase())
     },
     sequences: {
         type: [String],
