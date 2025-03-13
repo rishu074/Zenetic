@@ -9,6 +9,7 @@ export interface TodoCreateBody {
         unit: 'day' | 'week' | 'month';
     };
     work: string;
+    createdAt?: string;
 }
 
 const Schema: JSONSchemaType<TodoCreateBody> = {
@@ -54,6 +55,15 @@ const Schema: JSONSchemaType<TodoCreateBody> = {
             errorMessage: {
                 type: "work must be a string"
             }
+        },
+        "createdAt": {
+            type: "string",
+            format: "date-time",
+            nullable: true,
+            errorMessage: {
+                type: "createdAt must be a valid date string.",
+                format: "createdAt must be in ISO format"
+            }
         }
     },
     required: ['type', 'work'],
@@ -82,7 +92,7 @@ const Schema: JSONSchemaType<TodoCreateBody> = {
             type: ResponseMessages.BODY_REQUIRED_FAILED("type"),
             work: ResponseMessages.BODY_REQUIRED_FAILED("work")
         },
-        additionalProperties: "Provide only type, every and work fields.",
+        additionalProperties: "Provide only type, every, work and createdAt fields.",
         dependencies: {
             type: "every property is required when type is 'every'"
         }

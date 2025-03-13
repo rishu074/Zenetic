@@ -11,7 +11,8 @@ const CREATE_TODO_HANDLER = CreateRequestHandler<TodoCreateBody>(async function 
     const new_todo = new TodoModel({
         type: this.body.type,
         every: this.body.every,
-        work: this.body.work
+        work: this.body.work,
+        createdAt: this.body.createdAt
     });
 
     await new_todo.save();

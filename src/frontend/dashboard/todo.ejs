@@ -598,6 +598,10 @@
                     <input type="text" id="todoWork" class="form-input" required>
                 </div>
                 <div class="form-group">
+                    <label for="todoDate" class="form-label">Date</label>
+                    <input type="date" id="todoDate" class="form-input" required>
+                </div>
+                <div class="form-group">
                     <label for="todoType" class="form-label">Type</label>
                     <select id="todoType" class="form-select" onchange="toggleScheduleInputs()" required>
                         <option value="onetime">One Time</option>
@@ -999,7 +1003,10 @@
             try {
                 const work = document.getElementById('todoWork').value;
                 const type = document.getElementById('todoType').value;
-                let todoData = { work, type };
+                const date = document.getElementById('todoDate').value;
+                // Convert the date to ISO 8601 datetime format (YYYY-MM-DDTHH:mm:ss.sssZ)
+                const createdAt = new Date(date + 'T00:00:00.000Z').toISOString();
+                let todoData = { work, type, createdAt };
 
                 if (type === 'every') {
                     const amount = parseInt(document.getElementById('scheduleAmount').value);
