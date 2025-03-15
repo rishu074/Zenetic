@@ -829,7 +829,7 @@
             }
 
             return `
-                <div class="todo-card ${isCompleted ? 'todo-completed' : ''}">
+                <div class="todo-card ${!isRecurringSection && isCompleted ? 'todo-completed' : ''}">
                     ${!isRecurringSection ? `
                         <label class="todo-checkbox">
                             <input type="checkbox" ${isCompleted ? 'checked disabled' : ''} onchange="completeTodo('${todo._id}', this)">
