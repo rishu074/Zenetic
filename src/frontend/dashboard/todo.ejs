@@ -20,7 +20,7 @@
 
         .main-content {
             padding: 6rem 2rem 2rem;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -35,6 +35,32 @@
             font-size: 2rem;
             font-weight: 600;
             color: #f8fafc;
+        }
+
+        .tasks-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .main-tasks {
+            border-right: 1px solid #334155;
+            padding-right: 2rem;
+        }
+
+        .recurring-tasks {
+            padding-top: 3.5rem;  /* To align with tasks after the filters */
+        }
+
+        .recurring-tasks .section-title {
+            color: #60a5fa;
+            border-bottom-color: #60a5fa;
+        }
+
+        .recurring-tasks .todo-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
         }
 
         .filters-container {
@@ -497,41 +523,21 @@
             background-color: #059669;
         }
 
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 5rem 1rem 1rem;
-            }
-
-            .page-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-
-            .filters-container {
+        @media (max-width: 1024px) {
+            .tasks-layout {
                 grid-template-columns: 1fr;
+                gap: 3rem;
             }
 
-            .todo-card {
-                flex-direction: column;
-                align-items: flex-start;
+            .main-tasks {
+                border-right: none;
+                padding-right: 0;
             }
 
-            .todo-meta {
-                margin-bottom: 1rem;
-            }
-
-            .schedule-inputs {
-                grid-template-columns: 1fr;
-            }
-
-            .modal-content {
-                margin: 1rem;
-                width: auto;
-            }
-
-            .date-filter-group {
-                width: 100%;
+            .recurring-tasks {
+                padding-top: 0;
+                border-top: 1px solid #334155;
+                padding-top: 2rem;
             }
         }
     </style>
@@ -545,44 +551,55 @@
             <button class="create-btn" onclick="showCreateModal()">Create Todo</button>
         </div>
 
-        <div class="filters-container">
-            <input type="text" class="search-input" placeholder="Search todos..." id="searchInput">
-            <div class="date-filter-group">
-                <label for="createdAtFilter" class="filter-label">📅 Created Date</label>
-                <input type="date" class="date-input" id="createdAtFilter">
-            </div>
-            <div class="date-filter-group">
-                <label for="completedAtFilter" class="filter-label">✓ Completion Date</label>
-                <input type="date" class="date-input" id="completedAtFilter">
-            </div>
-            <select class="limit-select" id="limitSelect">
-                <option value="10">10 per page</option>
-                <option value="25" selected>25 per page</option>
-                <option value="50">50 per page</option>
-                <option value="100">100 per page</option>
-            </select>
-        </div>
+        <div class="tasks-layout">
+            <div class="main-tasks">
+                <div class="filters-container">
+                    <input type="text" class="search-input" placeholder="Search todos..." id="searchInput">
+                    <div class="date-filter-group">
+                        <label for="createdAtFilter" class="filter-label">📅 Created Date</label>
+                        <input type="date" class="date-input" id="createdAtFilter">
+                    </div>
+                    <div class="date-filter-group">
+                        <label for="completedAtFilter" class="filter-label">✓ Completion Date</label>
+                        <input type="date" class="date-input" id="completedAtFilter">
+                    </div>
+                    <select class="limit-select" id="limitSelect">
+                        <option value="10">10 per page</option>
+                        <option value="25" selected>25 per page</option>
+                        <option value="50">50 per page</option>
+                        <option value="100">100 per page</option>
+                    </select>
+                </div>
 
-        <div class="todos-section">
-            <h2 class="section-title">Incomplete Tasks</h2>
-            <div class="todos-grid" id="incompleteTodosGrid">
-                <!-- Incomplete todos will be loaded here -->
+                <div class="todos-section">
+                    <h2 class="section-title">Incomplete Tasks</h2>
+                    <div class="todos-grid" id="incompleteTodosGrid">
+                        <!-- Incomplete todos will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="todos-section">
+                    <h2 class="section-title">Completed Tasks</h2>
+                    <div class="todos-grid" id="completedTodosGrid">
+                        <!-- Completed todos will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="pagination-info" id="paginationInfo">
+                    <!-- Pagination info will be shown here -->
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be generated here -->
+                </div>
             </div>
-        </div>
 
-        <div class="todos-section">
-            <h2 class="section-title">Completed Tasks</h2>
-            <div class="todos-grid" id="completedTodosGrid">
-                <!-- Completed todos will be loaded here -->
+            <div class="recurring-tasks">
+                <h2 class="section-title">Recurring Tasks</h2>
+                <div class="todos-grid" id="recurringTodosGrid">
+                    <!-- Recurring todos will be loaded here -->
+                </div>
             </div>
-        </div>
-
-        <div class="pagination-info" id="paginationInfo">
-            <!-- Pagination info will be shown here -->
-        </div>
-
-        <div class="pagination" id="pagination">
-            <!-- Pagination will be generated here -->
         </div>
     </main>
 
@@ -785,17 +802,40 @@
             return now >= dueDate;
         }
 
-        function renderTodoCard(todo) {
+        function renderTodoCard(todo, isRecurringSection = false) {
             const latestCompletion = getLatestCompletion(todo.completed);
             const isDue = isTaskDue(todo);
             const isCompleted = !isDue;
 
+            // Calculate "due in" for recurring todos
+            let dueInText = '';
+            if (todo.type === 'every' && latestCompletion && isRecurringSection) {
+                const dueDate = new Date(latestCompletion);
+                switch (todo.every.unit) {
+                    case 'day':
+                        dueDate.setDate(dueDate.getDate() + todo.every.amount);
+                        break;
+                    case 'week':
+                        dueDate.setDate(dueDate.getDate() + (todo.every.amount * 7));
+                        break;
+                    case 'month':
+                        dueDate.setMonth(dueDate.getMonth() + todo.every.amount);
+                        break;
+                }
+                const now = new Date();
+                const diffTime = dueDate - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                dueInText = diffDays > 0 ? `Due in ${diffDays} day${diffDays > 1 ? 's' : ''}` : 'Due today';
+            }
+
             return `
                 <div class="todo-card ${isCompleted ? 'todo-completed' : ''}">
-                    <label class="todo-checkbox">
-                        <input type="checkbox" ${isCompleted ? 'checked disabled' : ''} onchange="completeTodo('${todo._id}', this)">
-                        <span class="checkmark"></span>
-                    </label>
+                    ${!isRecurringSection ? `
+                        <label class="todo-checkbox">
+                            <input type="checkbox" ${isCompleted ? 'checked disabled' : ''} onchange="completeTodo('${todo._id}', this)">
+                            <span class="checkmark"></span>
+                        </label>
+                    ` : ''}
                     <div class="todo-info">
                         <div class="todo-work">${todo.work}</div>
                         <div class="todo-meta">
@@ -804,6 +844,11 @@
                                 <span class="todo-schedule">
                                     every ${todo.every.amount} ${todo.every.unit}${todo.every.amount > 1 ? 's' : ''}
                                 </span>
+                                ${isRecurringSection && dueInText ? `
+                                    <span class="todo-schedule" style="background-color: #4f46e5;">
+                                        ${dueInText}
+                                    </span>
+                                ` : ''}
                             ` : ''}
                             <div class="todo-dates">
                                 <span>Created: ${formatDate(todo.createdAt)}</span>
@@ -819,8 +864,18 @@
 
         function renderTodos(todos) {
             const incompleteTodosGrid = document.getElementById('incompleteTodosGrid');
+            const recurringTodosGrid = document.getElementById('recurringTodosGrid');
             const completedTodosGrid = document.getElementById('completedTodosGrid');
             
+            // Always show all recurring todos regardless of filters
+            const recurringTodos = allTodos.filter(todo => todo.type === 'every');
+            if (recurringTodos.length === 0) {
+                recurringTodosGrid.innerHTML = '<div class="loading">No recurring todos</div>';
+            } else {
+                recurringTodosGrid.innerHTML = recurringTodos.map(todo => renderTodoCard(todo, true)).join('');
+            }
+
+            // Apply filters only to incomplete and completed sections
             incompleteTodosGrid.innerHTML = '';
             completedTodosGrid.innerHTML = '';
 
@@ -832,7 +887,7 @@
 
             if (completedAtFilter) {
                 incompleteTodosGrid.innerHTML = '<div class="loading">Switch to Created Date filter to see incomplete tasks</div>';
-                completedTodosGrid.innerHTML = todos.map(renderTodoCard).join('');
+                completedTodosGrid.innerHTML = todos.map(todo => renderTodoCard(todo)).join('');
                 return;
             }
 
@@ -842,13 +897,13 @@
             if (incompleteTodos.length === 0) {
                 incompleteTodosGrid.innerHTML = '<div class="loading">No incomplete todos</div>';
             } else {
-                incompleteTodosGrid.innerHTML = incompleteTodos.map(renderTodoCard).join('');
+                incompleteTodosGrid.innerHTML = incompleteTodos.map(todo => renderTodoCard(todo)).join('');
             }
 
             if (completedTodos.length === 0) {
                 completedTodosGrid.innerHTML = '<div class="loading">No completed todos</div>';
             } else {
-                completedTodosGrid.innerHTML = completedTodos.map(renderTodoCard).join('');
+                completedTodosGrid.innerHTML = completedTodos.map(todo => renderTodoCard(todo)).join('');
             }
         }
 

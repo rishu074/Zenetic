@@ -2056,8 +2056,13 @@
                 
                 // Then apply filtering logic to the complete dataset
                 const dueTasks = allTodos.filter(todo => {
+                    if(new Date(todo.createdAt) >= new Date()) {
+                        return false;
+                    }
+
+
                     if (todo.type === 'onetime') {
-                        return !todo.completed || todo.completed.length === 0;
+                        return (!todo.completed || todo.completed.length === 0) ;
                     }
 
 
