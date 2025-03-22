@@ -784,8 +784,12 @@
             const latestCompletion = getLatestCompletion(todo.completed);
             if (!latestCompletion) return true;
 
+            // Normalize dates to compare only the date part, not time
             const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            
             const dueDate = new Date(latestCompletion);
+            dueDate.setHours(0, 0, 0, 0);
 
             switch (todo.every.unit) {
                 case 'day':
