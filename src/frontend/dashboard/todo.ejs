@@ -720,8 +720,8 @@
                     if (!todo.completed || todo.completed.length === 0) {
                         return false;
                     }
-                    const completedDates = todo.completed.map(date => new Date(date).toDateString());
-                    const filterDate = new Date(completedAtFilter).toDateString();
+                    const completedDates = todo.completed.map(date => new Date(date));
+                    const filterDate = new Date(completedAtFilter);
                     if (!completedDates.includes(filterDate)) {
                         return false;
                     }
