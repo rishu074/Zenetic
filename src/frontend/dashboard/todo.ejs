@@ -722,7 +722,14 @@
                     }
                     const completedDates = todo.completed.map(date => new Date(date));
                     const filterDate = new Date(completedAtFilter);
-                    if (!completedDates.includes(filterDate)) {
+
+                    const exists = completedDates.some(date => 
+                        date.getFullYear() === filterDate.getFullYear() &&
+                        date.getMonth() === filterDate.getMonth() &&
+                        date.getDate() === filterDate.getDate()
+                    );
+
+                    if (!exists) {
                         return false;
                     }
                 }
