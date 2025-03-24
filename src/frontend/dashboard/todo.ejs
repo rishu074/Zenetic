@@ -784,7 +784,6 @@
             const latestCompletion = getLatestCompletion(todo.completed);
             if (!latestCompletion) return true;
 
-            // Normalize dates to compare only the date part, not time
             const now = new Date();
             now.setHours(0, 0, 0, 0);
             
@@ -803,7 +802,10 @@
                     break;
             }
 
-            return now >= dueDate;
+            // Compare dates without time
+            const nowStr = now.toDateString();
+            const dueDateStr = dueDate.toDateString();
+            return nowStr >= dueDateStr;
         }
 
         function renderTodoCard(todo, isRecurringSection = false) {
@@ -871,15 +873,19 @@
             const recurringTodosGrid = document.getElementById('recurringTodosGrid');
             const completedTodosGrid = document.getElementById('completedTodosGrid');
             
-            // Always show all recurring todos regardless of filters
+            // Get all recurring todos
             const recurringTodos = allTodos.filter(todo => todo.type === 'every');
+            
+            // Show recurring todos in the recurring section
             if (recurringTodos.length === 0) {
                 recurringTodosGrid.innerHTML = '<div class="loading">No recurring todos</div>';
             } else {
                 recurringTodosGrid.innerHTML = recurringTodos.map(todo => renderTodoCard(todo, true)).join('');
             }
 
-            // Apply filters only to incomplete and completed sections
+            // Also add due recurring todos to the incomplete section
+            const dueRecurringTodos = recurringTodos.filter(todo => isTaskDue(todo));
+            
             incompleteTodosGrid.innerHTML = '';
             completedTodosGrid.innerHTML = '';
 
@@ -895,13 +901,23 @@
                 return;
             }
 
-            const incompleteTodos = todos.filter(todo => isTaskDue(todo));
-            const completedTodos = todos.filter(todo => !isTaskDue(todo));
+            // Get incomplete one-time todos
+            const incompleteOnetimeTodos = todos.filter(todo => 
+                todo.type === 'onetime' && isTaskDue(todo)
+            );
 
-            if (incompleteTodos.length === 0) {
+            // Combine one-time and recurring due todos
+            const allIncompleteTodos = [...incompleteOnetimeTodos, ...dueRecurringTodos];
+            
+            // Get completed todos (only one-time todos should be here)
+            const completedTodos = todos.filter(todo => 
+                todo.type === 'onetime' && !isTaskDue(todo)
+            );
+
+            if (allIncompleteTodos.length === 0) {
                 incompleteTodosGrid.innerHTML = '<div class="loading">No incomplete todos</div>';
             } else {
-                incompleteTodosGrid.innerHTML = incompleteTodos.map(todo => renderTodoCard(todo)).join('');
+                incompleteTodosGrid.innerHTML = allIncompleteTodos.map(todo => renderTodoCard(todo)).join('');
             }
 
             if (completedTodos.length === 0) {
