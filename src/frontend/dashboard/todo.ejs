@@ -911,6 +911,7 @@
 
             // Get due recurring todos from all todos (not paginated)
             const dueRecurringTodos = recurringTodos.filter(todo => isTaskDue(todo));
+            console.log(dueRecurringTodos);
             
             // Combine one-time and recurring due todos
             const allIncompleteTodos = [...incompleteOnetimeTodos, ...dueRecurringTodos];
