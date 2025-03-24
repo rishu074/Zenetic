@@ -811,7 +811,7 @@
             // Compare dates without time
             const nowStr = now.toDateString();
             const dueDateStr = dueDate.toDateString();
-            return nowStr >= dueDateStr;
+            return now >= dueDate;
         }
 
         function renderTodoCard(todo, isRecurringSection = false) {
