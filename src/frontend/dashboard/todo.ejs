@@ -695,6 +695,12 @@
             if (!todos) return [];
             
             return todos.filter(todo => {
+                // For recurring todos, always include them in the filtered results
+                // They will be handled separately in renderTodos
+                if (todo.type === 'every') {
+                    return true;
+                }
+
                 // Search term filter
                 if (searchTerm && !todo.work.toLowerCase().includes(searchTerm.toLowerCase())) {
                     return false;
@@ -883,9 +889,6 @@
                 recurringTodosGrid.innerHTML = recurringTodos.map(todo => renderTodoCard(todo, true)).join('');
             }
 
-            // Also add due recurring todos to the incomplete section
-            const dueRecurringTodos = recurringTodos.filter(todo => isTaskDue(todo));
-            
             incompleteTodosGrid.innerHTML = '';
             completedTodosGrid.innerHTML = '';
 
@@ -901,11 +904,14 @@
                 return;
             }
 
-            // Get incomplete one-time todos
+            // Get incomplete one-time todos from the paginated todos
             const incompleteOnetimeTodos = todos.filter(todo => 
                 todo.type === 'onetime' && isTaskDue(todo)
             );
 
+            // Get due recurring todos from all todos (not paginated)
+            const dueRecurringTodos = recurringTodos.filter(todo => isTaskDue(todo));
+            
             // Combine one-time and recurring due todos
             const allIncompleteTodos = [...incompleteOnetimeTodos, ...dueRecurringTodos];
             
