@@ -813,6 +813,13 @@
             
             const tags = new Set();
             
+            // Create a hidden element to store the tags
+            const tagStorage = document.createElement('div');
+            tagStorage.style.display = 'none';
+            tagStorage.dataset.tagType = containerId;
+            tagStorage.dataset.tags = JSON.stringify(Array.from(tags));
+            container.appendChild(tagStorage);
+            
             // Handle both keydown and input submit events
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
@@ -820,6 +827,7 @@
                     const value = input.value.trim();
                     if (value && !tags.has(value)) {
                         tags.add(value);
+                        tagStorage.dataset.tags = JSON.stringify(Array.from(tags));
                         renderTags();
                     }
                     input.value = '';
@@ -831,6 +839,7 @@
                 const value = input.value.trim();
                 if (value && !tags.has(value)) {
                     tags.add(value);
+                    tagStorage.dataset.tags = JSON.stringify(Array.from(tags));
                     renderTags();
                     input.value = '';
                 }
@@ -845,14 +854,23 @@
                     tagElement.className = 'tag';
                     tagElement.innerHTML = `
                         ${tag}
-                        <span style="cursor: pointer; margin-left: 4px;" onclick="this.parentElement.remove(); tags.delete('${tag}');">&times;</span>
+                        <span style="cursor: pointer; margin-left: 4px;" onclick="removeTagFromContainer(event, this.parentElement, '${tag}')">&times;</span>
                     `;
                     container.insertBefore(tagElement, input);
                 });
             }
 
             container.appendChild(input);
-            return { container, getTags: () => Array.from(tags) };
+            return { 
+                container, 
+                getTags: () => {
+                    const tagStorage = container.querySelector(`[data-tag-type="${containerId}"]`);
+                    if (tagStorage) {
+                        return JSON.parse(tagStorage.dataset.tags);
+                    }
+                    return [];
+                }
+            };
         }
 
         function addObservationInput() {
@@ -965,9 +983,7 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             document.getElementById('driftDate').value = `${year}-${month}-${day}T${hours}:${minutes}`;
             
-            // Load observations for selection
-            loadObservationsForSelector();
-            
+            // Focus on the topic input
             document.getElementById('driftTopic').focus();
         }
 
@@ -1038,6 +1054,50 @@
                 closeCreateModal();
             }
         });
+
+        function removeTagFromContainer(event, element, tag) {
+            event.stopPropagation(); // Prevent event bubbling
+            
+            // Find the parent container
+            const container = element.closest('.tag-input-container');
+            if (container) {
+                // Find the input element
+                const input = container.querySelector('.tag-input');
+                if (input) {
+                    // Get the tag text without the 'x' button
+                    const tagText = tag.trim();
+                    
+                    // Find the Set of tags by looking at the parent observation group
+                    const observationGroup = container.closest('.observation-input-group');
+                    if (observationGroup) {
+                        // Get the type of tag (feelings, urges, sequences)
+                        let tagType = '';
+                        if (container.parentElement.querySelector('label').textContent.includes('Feelings')) {
+                            tagType = 'feelings';
+                        } else if (container.parentElement.querySelector('label').textContent.includes('Urges')) {
+                            tagType = 'urges';
+                        } else if (container.parentElement.querySelector('label').textContent.includes('Sequences')) {
+                            tagType = 'sequences';
+                        }
+                        
+                        // Remove the tag from the Set
+                        if (tagType) {
+                            // Find the Set of tags for this type
+                            const tagSet = observationGroup.querySelector(`[data-tag-type="${tagType}"]`);
+                            if (tagSet) {
+                                // Remove the tag from the Set
+                                const tags = new Set(JSON.parse(tagSet.dataset.tags));
+                                tags.delete(tagText);
+                                tagSet.dataset.tags = JSON.stringify(Array.from(tags));
+                            }
+                        }
+                    }
+                    
+                    // Remove the tag element from the DOM
+                    element.remove();
+                }
+            }
+        }
 
         // Initial load
         loadPage(1);

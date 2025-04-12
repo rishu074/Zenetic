@@ -1018,14 +1018,15 @@
             
             // Show 6 months per page
             for (let i = 5; i >= 0; i--) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i - (observationsOffset * 6), 1);
+                const date = new Date(now.getFullYear(), now.getMonth() - i - (observationsOffset * 6), 2);
                 date.setHours(0, 0, 0, 0);
                 data.set(date.toISOString().split('T')[0], 0);
+                console.log(date.toISOString(), JSON.stringify(Object.fromEntries(data)))
             }
 
             observations.forEach(observation => {
                 const obsDate = new Date(observation.date);
-                const monthStart = new Date(obsDate.getFullYear(), obsDate.getMonth(), 1);
+                const monthStart = new Date(obsDate.getFullYear(), obsDate.getMonth(), 2);
                 monthStart.setHours(0, 0, 0, 0);
                 const key = monthStart.toISOString().split('T')[0];
                 if (data.has(key)) {
@@ -1039,6 +1040,7 @@
             // Update navigation buttons
             updateObservationsNavigationButtons(observations, range);
 
+            
             const sortedDates = Array.from(data.keys()).sort();
             
             return {
@@ -1660,14 +1662,14 @@
             
             // Show 6 months per page
             for (let i = 5; i >= 0; i--) {
-                const date = new Date(now.getFullYear(), now.getMonth() - i - (driftsOffset * 6), 1);
+                const date = new Date(now.getFullYear(), now.getMonth() - i - (driftsOffset * 6), 2);
                 date.setHours(0, 0, 0, 0);
                 data.set(date.toISOString().split('T')[0], 0);
             }
 
             drifts.forEach(drift => {
                 const driftDate = new Date(drift.date);
-                const monthStart = new Date(driftDate.getFullYear(), driftDate.getMonth(), 1);
+                const monthStart = new Date(driftDate.getFullYear(), driftDate.getMonth(), 2);
                 monthStart.setHours(0, 0, 0, 0);
                 const key = monthStart.toISOString().split('T')[0];
                 if (data.has(key)) {
@@ -1950,6 +1952,7 @@
 
                 // Initialize observations chart
                 const observationsData = processObservationsData(observations, 'monthly');
+                console.log(observationsData)
                 updateObservationsChart(observationsData);
 
                 // Initialize drifts charts

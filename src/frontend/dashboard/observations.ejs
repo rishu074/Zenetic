@@ -527,7 +527,7 @@
                     <div class="error-message" id="sequencesError"></div>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="cancel-btn">Cancel</button>
+                    <button type="button" class="cancel-btn" onclick="closeCreateModal()">Cancel</button>
                     <button type="submit" class="submit-btn" id="submitButton">Create</button>
                 </div>
             </form>
@@ -819,7 +819,8 @@
             document.getElementById(`${type}Input`).value = '';
         }
 
-        function removeTag(type, tag) {
+        function removeTag(event, type, tag) {
+            event.stopPropagation(); // Prevent event bubbling
             tags[type] = tags[type].filter(t => t !== tag);
             updateTagsDisplay(type);
         }
@@ -829,7 +830,7 @@
             container.innerHTML = tags[type].map(tag => `
                 <div class="tag-item">
                     ${tag}
-                    <span class="tag-remove" onclick="removeTag('${type}', '${tag}')">&times;</span>
+                    <span class="tag-remove" onclick="removeTag(event, '${type}', '${tag}')">&times;</span>
                 </div>
             `).join('');
         }
