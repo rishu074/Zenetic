@@ -945,13 +945,13 @@
             } else if (range === 'monthly') {
                 // Show 6 months per page
                 for (let i = 5; i >= 0; i--) {
-                    const date = new Date(now.getFullYear(), now.getMonth() - i - (currentOffset * 6), 1);
+                    const date = new Date(now.getFullYear(), now.getMonth() - i - (currentOffset * 6), 2);
                     data.set(date.toISOString().split('T')[0], 0);
                 }
 
                 journals.forEach(journal => {
                     const date = new Date(journal.date);
-                    const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+                    const monthStart = new Date(date.getFullYear(), date.getMonth(), 2);
                     const key = monthStart.toISOString().split('T')[0];
                     if (data.has(key)) {
                         data.set(key, data.get(key) + 1);
